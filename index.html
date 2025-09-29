@@ -12,978 +12,2077 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(to bottom, #1a1a2e, #0f0f0f);
+            font-family: Arial, sans-serif;
+            background: linear-gradient(135deg, #0f0f23, #1a1a2e);
             color: white;
+            height: 100vh;
+            display: grid;
+            grid-template-areas: 
+                "sidebar top-panel"
+                "sidebar main-canvas"
+                "sidebar bottom-panel";
+            grid-template-columns: 350px 1fr;
+            grid-template-rows: 80px 1fr 120px;
             overflow: hidden;
         }
 
-        .header {
-            background: rgba(0, 0, 0, 0.9);
-            padding: 15px;
-            text-align: center;
-            border-bottom: 1px solid #666;
+        .controls-panel {
+            grid-area: sidebar;
+            background: rgba(30, 30, 50, 0.95);
+            overflow-y: auto;
+            padding: 20px;
+            border-right: 3px solid #4CAF50;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.3);
         }
 
-        .header h1 {
-            color: #00bcd4;
-            font-size: 2rem;
+        .top-panel {
+            grid-area: top-panel;
+            background: rgba(30, 30, 50, 0.95);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 15px;
+            border-bottom: 2px solid #4CAF50;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        .dna-canvas-area {
+            grid-area: main-canvas;
+            background: radial-gradient(circle at center, #1a1a2e 0%, #0f0f23 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .bottom-panel {
+            grid-area: bottom-panel;
+            background: rgba(30, 30, 50, 0.95);
+            padding: 15px 20px;
+            border-top: 2px solid #4CAF50;
+            box-shadow: 0 -2px 10px rgba(0,0,0,0.3);
+            overflow-x: auto;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .panel-section {
+            margin-bottom: 20px;
+            background: rgba(255,255,255,0.05);
+            border-radius: 10px;
+            padding: 15px;
+            border-left: 4px solid #00BFFF;
+        }
+
+        .section-header {
+            font-size: 16px;
+            font-weight: bold;
+            color: #00BFFF;
+            margin-bottom: 12px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .dna-input {
+            width: 100%;
+            padding: 12px;
+            background: rgba(60, 80, 100, 0.8);
+            border: 2px solid #555;
+            border-radius: 8px;
+            color: white;
+            font-family: 'Courier New', monospace;
+            font-size: 14px;
+            text-transform: uppercase;
+            margin-bottom: 10px;
+        }
+
+        .generate-btn {
+            width: 100%;
+            padding: 12px;
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            border: none;
+            border-radius: 8px;
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            font-size: 14px;
+            margin-bottom: 15px;
+        }
+
+        .strand-info {
+            background: rgba(0,0,0,0.3);
+            padding: 10px;
+            border-radius: 6px;
+            margin: 8px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 12px;
+        }
+
+        .strand-label {
+            color: #FFD700;
+            font-weight: bold;
             margin-bottom: 5px;
         }
 
-        .container {
-            display: flex;
-            width: 100vw;
-            height: calc(100vh - 180px);
-        }
-
-        .left-panel {
-            width: 300px;
-            background: rgba(0, 0, 0, 0.9);
-            border-right: 1px solid #444;
-            padding: 20px;
-            overflow-y: auto;
-        }
-
-        .controls button {
-            display: block;
+        .control-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            gap: 15px;
             width: 100%;
-            padding: 12px;
-            margin: 8px 0;
+            max-width: 400px;
+        }
+
+        .control-btn {
+            padding: 15px 20px;
             border: none;
-            border-radius: 5px;
+            border-radius: 10px;
+            color: white;
             cursor: pointer;
-            font-weight: bold;
-            transition: all 0.3s;
             font-size: 14px;
+            font-weight: bold;
+            transition: transform 0.2s ease, box-shadow 0.2s ease;
         }
 
-        .start-btn {
-            background: #9c27b0;
-            color: white;
+        .control-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
         }
 
-        .reset-btn {
-            background: #f44336;
-            color: white;
+        .start-btn { background: linear-gradient(45deg, #4CAF50, #45a049); }
+        .stop-btn { background: linear-gradient(45deg, #f44336, #d32f2f); }
+        .reset-btn { background: linear-gradient(45deg, #2196F3, #1976D2); }
+
+        .status-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 8px;
+            margin-bottom: 10px;
         }
 
-        .progress {
-            background: rgba(40, 40, 40, 0.9);
-            padding: 15px;
+        .status-item {
+            background: rgba(0,0,0,0.3);
+            padding: 8px 6px;
+            border-radius: 6px;
+            text-align: center;
+            font-size: 10px;
+            min-height: 45px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .status-item > div:first-child {
+            font-size: 9px;
+            margin-bottom: 2px;
+            line-height: 1.2;
+        }
+
+        .status-active { color: #4CAF50; font-weight: bold; }
+        .status-inactive { color: #888; }
+
+        .current-step {
+            background: rgba(76, 175, 80, 0.2);
+            border: 2px solid #4CAF50;
             border-radius: 8px;
-            margin: 20px 0;
-            border: 1px solid #444;
-            display: none;
+            padding: 15px;
+            font-size: 12px;
+            line-height: 1.4;
+            color: #4CAF50;
+            font-weight: bold;
+            text-align: center;
         }
 
-        .status-indicator {
-            display: inline-block;
-            width: 12px;
-            height: 12px;
-            border-radius: 50%;
-            margin-left: 8px;
+        .toolbox-grid {
+            display: flex;
+            gap: 15px;
+            justify-content: center;
+            align-items: center;
+            margin-bottom: 15px;
         }
 
-        .status-active { 
-            background-color: #4CAF50; 
-            box-shadow: 0 0 8px #4CAF50;
-        }
-        
-        .status-inactive { 
-            background-color: #757575; 
-        }
-
-        .main-canvas {
-            flex: 1;
-            position: relative;
-            background: radial-gradient(circle, #1a1a2e, #0f0f0f);
+        .tool-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: grab;
+            padding: 8px 12px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            flex: 0 0 auto;
         }
 
-        #canvas-container {
+        .tool-item:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: #4CAF50;
+            transform: translateY(-2px);
+        }
+
+        .tool-item.dragging {
+            cursor: grabbing;
+            opacity: 0.7;
+        }
+
+        .tool-item.highlighted {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4CAF50;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0% { box-shadow: 0 0 15px rgba(76, 175, 80, 0.5); }
+            50% { box-shadow: 0 0 25px rgba(76, 175, 80, 0.8); }
+            100% { box-shadow: 0 0 15px rgba(76, 175, 80, 0.5); }
+        }
+
+        .tool-shape {
+            margin-bottom: 4px;
+        }
+
+        .tool-label {
+            font-size: 9px;
+            text-align: center;
+            font-weight: bold;
+            color: #ccc;
+            white-space: nowrap;
+        }
+
+        .nucleotide-grid {
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .nucleotide-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: grab;
+            padding: 6px 10px;
+            border-radius: 8px;
+            background: rgba(255,255,255,0.1);
+            border: 2px solid transparent;
+            transition: all 0.3s ease;
+            flex: 0 0 auto;
+        }
+
+        .nucleotide-item:hover {
+            background: rgba(255,255,255,0.2);
+            border-color: #4CAF50;
+            transform: translateY(-2px);
+        }
+
+        .nucleotide-item.highlighted {
+            background: rgba(76, 175, 80, 0.3);
+            border-color: #4CAF50;
+            box-shadow: 0 0 15px rgba(76, 175, 80, 0.5);
+            animation: pulse 2s infinite;
+        }
+
+        .nucleotide-shape {
+            width: 26px;
+            height: 26px;
+            margin-bottom: 3px;
+            border: 2px solid #fff;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 14px;
+            font-weight: bold;
+            color: #000;
+            border-radius: 4px;
+        }
+
+        .nucleotide-label {
+            font-size: 7px;
+            text-align: center;
+            font-weight: bold;
+            color: #ccc;
+            white-space: nowrap;
+        }
+
+        .bottom-section {
+            display: flex;
+            align-items: center;
+            gap: 30px;
+            justify-content: center;
+        }
+
+        .section-title {
+            font-size: 12px;
+            font-weight: bold;
+            color: #00BFFF;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 8px;
+            text-align: center;
+        }
+
+        #canvas {
+            display: block;
+            background: transparent;
+            border: 2px solid #4CAF50;
+            border-radius: 10px;
+            width: 800px;
+            height: 480px;
+        }
+
+        .sequence-length {
+            color: #888;
+            font-size: 11px;
+            margin-top: 5px;
+        }
+
+        .error-message {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            color: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            font-weight: bold;
+            z-index: 1000;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            box-shadow: 0 10px 30px rgba(76, 175, 80, 0.3);
+        }
+
+        .error-message.show {
+            opacity: 1;
+        }
+
+        .completion-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
             width: 100%;
             height: 100%;
+            background: rgba(0, 0, 0, 0.8);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            cursor: pointer;
         }
 
-        .status-message {
-            background: rgba(40, 40, 40, 0.9);
-            padding: 10px;
-            border-radius: 5px;
-            margin: 10px 0;
-            border-left: 3px solid #00bcd4;
-            font-size: 0.8rem;
+        .completion-overlay.show {
+            display: flex;
         }
 
-        .enzyme-order {
-            font-size: 0.75rem;
-            color: #ccc;
+        .completion-message {
+            background: linear-gradient(45deg, #4CAF50, #45a049);
+            padding: 40px;
+            border-radius: 20px;
+            text-align: center;
+            box-shadow: 0 20px 40px rgba(76, 175, 80, 0.3);
+            cursor: pointer;
+        }
+
+        .completion-title {
+            font-size: 32px;
+            font-weight: bold;
+            color: white;
+            margin-bottom: 10px;
+        }
+
+        .completion-subtitle {
+            font-size: 18px;
+            color: white;
+            opacity: 0.9;
+            margin-bottom: 20px;
+        }
+
+        .try-again-text {
+            font-size: 14px;
+            color: white;
+            opacity: 0.8;
             margin-top: 10px;
-            padding-top: 10px;
-            border-top: 1px solid #555;
         }
 
-        .enzyme-order ol {
-            margin-left: 20px;
-        }
-
-        .enzyme-order li {
-            margin: 3px 0;
+        .title {
+            text-align: center;
+            font-size: 24px;
+            font-weight: bold;
+            color: #4CAF50;
+            margin-bottom: 25px;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
         }
     </style>
 </head>
 <body>
-    <div class="header">
-        <h1>DNA Replication Simulation</h1>
-        <p>Scientifically accurate enzyme-driven DNA replication with 3D double helix structure</p>
-    </div>
-
-    <div class="container">
-        <div class="left-panel">
-            <div class="controls">
-                <button id="gameBtn" class="start-btn">Start Replication</button>
-                <button id="resetBtn" class="reset-btn">Reset</button>
+    <div class="controls-panel">
+        <div class="title">DNA Replication Lab</div>
+        
+        <div class="panel-section">
+            <div class="section-header">DNA Sequence</div>
+            <input type="text" id="dnaInput" class="dna-input" placeholder="Enter DNA sequence" maxlength="30" value="ATCGATCGATCGATCGATCGATCGATCGAT">
+            <div class="sequence-length">Length: <span id="lengthDisplay">30</span> bases</div>
+            <button class="generate-btn" id="generateBtn">Generate Random Sequence</button>
+            
+            <div class="strand-info">
+                <div class="strand-label">5' → 3' Strand:</div>
+                <div id="leadingStrand">ATCGATCGATCGATCGATCGATCGATCGAT</div>
             </div>
-
-            <div class="status-message" id="statusMessage">
-                Loading DNA structure...
+            
+            <div class="strand-info">
+                <div class="strand-label">3' → 5' Strand:</div>
+                <div id="laggingStrand">TAGCTAGCTAGCTAGCTAGCTAGCTAGCTA</div>
             </div>
+        </div>
 
-            <div id="progress" class="progress">
-                <div><strong>Replication Enzymes:</strong></div>
-                <div>Helicase <span class="status-indicator" id="helicaseStatus"></span></div>
-                <div>SSB Proteins <span class="status-indicator" id="ssbStatus"></span></div>
-                <div>Topoisomerase <span class="status-indicator" id="topoStatus"></span></div>
-                <div>Primase <span class="status-indicator" id="primaseStatus"></span></div>
-                <div>DNA Pol III <span class="status-indicator" id="pol3Status"></span></div>
-                <div>DNA Pol I <span class="status-indicator" id="pol1Status"></span></div>
-                <div>Ligase <span class="status-indicator" id="ligaseStatus"></span></div>
-                <div style="margin-top: 15px; padding-top: 10px; border-top: 1px solid #555;">
-                    <div>Fork Position: <span id="forkPosition">0</span>%</div>
-                    <div>Leading Strand: <span id="leadingCount">0</span>%</div>
-                    <div>Lagging Strand: <span id="laggingCount">0</span>%</div>
+        <div class="panel-section">
+            <div class="section-header">Current Step</div>
+            <div id="currentStepInstruction" class="current-step">
+                <strong>Step 1:</strong> Drag Helicase enzyme to the DNA center to begin unwinding the double helix.
+            </div>
+        </div>
+
+        <div class="panel-section">
+            <div class="section-header">Enzyme Status</div>
+            <div class="status-grid">
+                <div class="status-item">
+                    <div>Helicase</div>
+                    <div id="helicaseStatus" class="status-inactive">Inactive</div>
+                </div>
+                <div class="status-item">
+                    <div>Primase</div>
+                    <div id="primaseStatus" class="status-inactive">Inactive</div>
+                </div>
+                <div class="status-item">
+                   <div>DNA Pol III</div>
+                    <div id="polymeraseStatus" class="status-inactive">Inactive</div>
+                </div>
+                <div class="status-item">
+                    <div>DNA Pol I</div>
+                    <div id="polIStatus" class="status-inactive">Inactive</div>
+                </div>
+                <div class="status-item">
+                    <div>Ligase</div>
+                    <div id="ligaseStatus" class="status-inactive">Inactive</div>
                 </div>
             </div>
-
-            <div class="enzyme-order">
-                <strong>Enzyme Order:</strong>
-                <ol>
-                    <li>Helicase (unwinds DNA)</li>
-                    <li>SSB Proteins (stabilizes strands)</li>
-                    <li>Topoisomerase (relieves tension)</li>
-                    <li>Primase (creates primers)</li>
-                    <li>DNA Pol III (main synthesis)</li>
-                    <li>DNA Pol I (replaces primers)</li>
-                    <li>Ligase (joins fragments)</li>
-                </ol>
-            </div>
-        </div>
-
-        <div class="main-canvas">
-            <div id="canvas-container"></div>
         </div>
     </div>
 
-    <!-- Load Three.js first -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <div class="top-panel">
+        <div class="control-grid">
+            <button id="startBtn" class="control-btn start-btn">START</button>
+            <button id="stopBtn" class="control-btn stop-btn">STOP</button>
+            <button id="resetBtn" class="control-btn reset-btn">RESET</button>
+        </div>
+    </div>
+
+    <div class="dna-canvas-area">
+        <canvas id="canvas" width="800" height="480"></canvas>
+    </div>
+
+    <div class="bottom-panel">
+        <div class="bottom-section">
+            <div>
+                <div class="section-title">Enzymes</div>
+                <div class="toolbox-grid">
+                    <div class="tool-item" data-enzyme="helicase">
+                        <div class="tool-shape">
+                            <svg width="24" height="24">
+                                <polygon points="12,2 20,6 20,18 12,22 4,18 4,6" fill="#8D6E63" stroke="#fff" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                        <div class="tool-label">Helicase</div>
+                    </div>
+                    <div class="tool-item" data-enzyme="primase">
+                        <div class="tool-shape">
+                            <svg width="22" height="22">
+                                <circle cx="11" cy="11" r="9" fill="#00BCD4" stroke="#fff" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                        <div class="tool-label">Primase</div>
+                    </div>
+                    <div class="tool-item" data-enzyme="polymerase">
+                        <div class="tool-shape">
+                            <svg width="24" height="24">
+                                <circle cx="12" cy="12" r="10" fill="#607D8B" stroke="#fff" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                       <div class="tool-label">DNA Pol III</div>
+                    </div>
+                    <div class="tool-item" data-enzyme="pol1">
+                        <div class="tool-shape">
+                            <svg width="22" height="22">
+                                <ellipse cx="11" cy="11" rx="9" ry="8" fill="#9C27B0" stroke="#fff" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                        <div class="tool-label">DNA Pol I</div>
+                    </div>
+                    <div class="tool-item" data-enzyme="ligase">
+                        <div class="tool-shape">
+                            <svg width="20" height="20">
+                                <rect x="2" y="2" width="16" height="16" fill="#795548" stroke="#fff" stroke-width="1.5"/>
+                            </svg>
+                        </div>
+                        <div class="tool-label">Ligase</div>
+                    </div>
+                </div>
+            </div>
+            
+            <div>
+                <div class="section-title">Nucleotides</div>
+                <div class="nucleotide-grid">
+                    <div class="nucleotide-item" data-base="A">
+                        <div class="nucleotide-shape" style="background-color: #ff6b6b;">A</div>
+                        <div class="nucleotide-label">Adenine</div>
+                    </div>
+                    <div class="nucleotide-item" data-base="T">
+                        <div class="nucleotide-shape" style="background-color: #4ecdc4;">T</div>
+                        <div class="nucleotide-label">Thymine</div>
+                    </div>
+                    <div class="nucleotide-item" data-base="G">
+                        <div class="nucleotide-shape" style="background-color: #45b7d1;">G</div>
+                        <div class="nucleotide-label">Guanine</div>
+                    </div>
+                    <div class="nucleotide-item" data-base="C">
+                        <div class="nucleotide-shape" style="background-color: #96ceb4;">C</div>
+                        <div class="nucleotide-label">Cytosine</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div id="errorMessage" class="error-message"></div>
+
+    <div id="completionOverlay" class="completion-overlay">
+        <div class="completion-message">
+            <div class="completion-title">REPLICATION COMPLETED</div>
+            <div class="completion-subtitle">DNA synthesis successfully finished!</div>
+            <div class="try-again-text">Click anywhere to try a new simulation</div>
+        </div>
+    </div>
+
     <script>
-        // Global variables
-        let scene, camera, renderer;
-        let gameMode = false;
-        let floatingElements = [];
-        let dnaGroup;
-        let isDragging = false;
-        let dragObject = null;
-        let mouse = new THREE.Vector2();
-        let raycaster = new THREE.Raycaster();
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
         
-        // Replication state with Okazaki fragment tracking
-        let replicationState = {
-            helicase: false,
-            ssbProteins: false,
-            topoisomerase: false,
-            primase: false,
-            polymerase3: false,
-            polymerase1: false,
-            ligase: false,
-            leadingProgress: 0,
-            laggingProgress: 0,
-            forkPosition: 0,
-            replicationStarted: false,
-            okazakiFragments: [], // Track individual fragments
-            leadingStrandContinuous: true,
-            laggingStrandDiscontinuous: true
-        };
-
-        const dnaSequence = 'ATCGATCGATCGATCG'; // Shorter sequence for clarity
-        const numBases = dnaSequence.length;
-
         const BASE_COLORS = {
-            A: 0xFF4444, T: 0x00DDDD, G: 0x4444FF, C: 0x44DD44
+            A: '#ff6b6b',
+            T: '#4ecdc4',
+            G: '#45b7d1',
+            C: '#96ceb4'
         };
 
-        const BASE_PAIRS = {
-            A: { complement: 'T', hBonds: 2 },
-            T: { complement: 'A', hBonds: 2 },
-            G: { complement: 'C', hBonds: 3 },
-            C: { complement: 'G', hBonds: 3 }
+        let gameState = {
+            running: false,
+            dnaSequence: 'ATCGATCGATCGATCGATCGATCGATCGAT',
+            originalSequence: 'ATCGATCGATCGATCGATCGATCGATCGAT',
+            dnaStrands: {
+                leading: [],
+                lagging: [],
+                leadingNew: [],
+                laggingNew: []
+            },
+            placedEnzymes: [],
+            isDragging: false,
+            draggedItem: null,
+            helicaseActive: false,
+            primaseActive: false,
+            primaseCount: 0,
+            polymeraseActive: false,
+            polymeraseCount: 0,
+            pol1Active: false,
+            pol1Count: 0,
+            ligaseActive: false,
+            ligaseProcessing: false,
+            dnaCenter: { x: 450, y: 300 },
+            strandSeparation: 0,
+            nucleotidePositions: [],
+            nucleotideCount: { leading: 0, lagging: 0 },
+            rnaPrimers: { leading: false, lagging: false },
+            bondAnimations: [],
+            laggingFragments: [
+                { start: 0, end: 10, primerAdded: false, nucleotidesAdded: 0, completed: false },
+                { start: 11, end: 21, primerAdded: false, nucleotidesAdded: 0, completed: false },
+                { start: 22, end: 29, primerAdded: false, nucleotidesAdded: 0, completed: false }
+            ],
+            currentFragment: 0,
+            ligaseTimer: 0,
+            ligaseGapIndex: 0,
+            polymerasePositions: {
+                leading: -1,
+                lagging: -1
+            },
+            gapsFixed: [],
+            allGapsFixed: false
         };
 
-        const ENZYMES = {
-            helicase: { name: 'Helicase', color: 0xFF1493 },
-            ssbProteins: { name: 'SSB', color: 0xFFA500 },
-            topoisomerase: { name: 'Topoisomerase', color: 0x9932CC },
-            primase: { name: 'Primase', color: 0x32CD32 },
-            polymerase3: { name: 'Pol III', color: 0x4169E1 },
-            polymerase1: { name: 'Pol I', color: 0xFF6347 },
-            ligase: { name: 'Ligase', color: 0xDC143C }
-        };
-
-        function updateStatus(message) {
-            document.getElementById('statusMessage').textContent = message;
-        }
-
-        // Initialize scene
-        function initScene() {
-            const container = document.getElementById('canvas-container');
-            
-            scene = new THREE.Scene();
-            scene.background = new THREE.Color(0x0a0a1a);
-
-            camera = new THREE.PerspectiveCamera(75, container.clientWidth / container.clientHeight, 0.1, 1000);
-            camera.position.set(0, 0, 20);
-
-            renderer = new THREE.WebGLRenderer({ antialias: true });
-            renderer.setSize(container.clientWidth, container.clientHeight);
-            container.appendChild(renderer.domElement);
-
-            // Lighting
-            const ambientLight = new THREE.AmbientLight(0x404040, 0.8);
-            scene.add(ambientLight);
-            
-            const directionalLight = new THREE.DirectionalLight(0xffffff, 1.0);
-            directionalLight.position.set(10, 10, 10);
-            scene.add(directionalLight);
-
-            const pointLight = new THREE.PointLight(0xffffff, 0.6);
-            pointLight.position.set(0, 8, 5);
-            scene.add(pointLight);
-
-            setupMouseInteraction();
-            animate();
-
-            // Create initial DNA structure
-            createDNAHelix();
-            updateStatus('DNA structure loaded. Click "Start Replication" to begin.');
-
-            window.addEventListener('resize', () => {
-                camera.aspect = container.clientWidth / container.clientHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize(container.clientWidth, container.clientHeight);
+        function addBondAnimation(position, strand) {
+            gameState.bondAnimations.push({
+                position: position,
+                strand: strand,
+                timer: 0,
+                maxTime: 60
             });
         }
 
-        function setupMouseInteraction() {
-            const container = renderer.domElement;
-
-            container.addEventListener('mousedown', onMouseDown);
-            container.addEventListener('mousemove', onMouseMove);
-            container.addEventListener('mouseup', onMouseUp);
-        }
-
-        function getMousePosition(event) {
-            const rect = renderer.domElement.getBoundingClientRect();
-            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-        }
-
-        function onMouseDown(event) {
-            if (!gameMode) return;
-            
-            getMousePosition(event);
-            raycaster.setFromCamera(mouse, camera);
-            
-            const clickableObjects = [];
-            floatingElements.forEach(element => {
-                element.traverse(child => {
-                    if (child.isMesh && child.userData.draggable) {
-                        clickableObjects.push(child);
-                    }
-                });
+        function updateBondAnimations() {
+            gameState.bondAnimations.forEach(animation => {
+                animation.timer++;
             });
-            
-            const intersects = raycaster.intersectObjects(clickableObjects);
-            
-            if (intersects.length > 0) {
-                let targetObject = intersects[0].object;
-                while (targetObject && !targetObject.userData.type && targetObject.parent) {
-                    targetObject = targetObject.parent;
-                }
-                
-                if (targetObject && targetObject.userData.enzymeType) {
-                    placeEnzyme(targetObject.userData.enzymeType, targetObject);
-                } else if (targetObject && targetObject.userData.nucleotideType) {
-                    placeNucleotide(targetObject.userData.nucleotideType, targetObject);
-                }
-            }
+            gameState.bondAnimations = gameState.bondAnimations.filter(animation => {
+                return animation.timer < animation.maxTime;
+            });
         }
 
-        function onMouseMove(event) {
-            if (!gameMode) return;
+        function getBondAnimationColor(position, strand) {
+            const animation = gameState.bondAnimations.find(anim => 
+                anim.position === position && anim.strand === strand
+            );
             
-            getMousePosition(event);
-            raycaster.setFromCamera(mouse, camera);
+            if (!animation) return '#8B4513';
             
-            const clickableObjects = [];
-            floatingElements.forEach(element => {
-                element.traverse(child => {
-                    if (child.isMesh && child.userData.draggable) {
-                        clickableObjects.push(child);
-                    }
-                });
-            });
-            
-            const intersects = raycaster.intersectObjects(clickableObjects);
-            
-            if (intersects.length > 0) {
-                renderer.domElement.style.cursor = 'pointer';
+            const progress = animation.timer / animation.maxTime;
+            if (progress < 0.2) {
+                return '#FFFF00';
             } else {
-                renderer.domElement.style.cursor = 'default';
+                const fadeProgress = (progress - 0.2) / 0.8;
+                const r = Math.round(255 + (139 - 255) * fadeProgress);
+                const g = Math.round(255 + (69 - 255) * fadeProgress);
+                const b = Math.round(0 + (19 - 0) * fadeProgress);
+                return `rgb(${r}, ${g}, ${b})`;
             }
         }
 
-        function onMouseUp(event) {
-            // Just handle clicks for now
+        function getComplement(base) {
+            const complements = { 'A': 'T', 'T': 'A', 'G': 'C', 'C': 'G' };
+            return complements[base] || base;
         }
 
-        function animate() {
-            requestAnimationFrame(animate);
+        function generateRandomSequence() {
+            const bases = ['A', 'T', 'G', 'C'];
+            let sequence = '';
+            for (let i = 0; i < 30; i++) {
+                sequence += bases[Math.floor(Math.random() * bases.length)];
+            }
+            return sequence;
+        }
+
+        function updateDNADisplays() {
+            const sequence = gameState.dnaSequence;
+            const complement = sequence.split('').map(base => getComplement(base)).join('');
             
-            // Animate floating elements
-            floatingElements.forEach((element, index) => {
-                if (element.userData.isFloating) {
-                    const time = Date.now() * 0.001 + index * 0.5;
-                    element.position.y = element.userData.originalY + Math.sin(time * 0.8) * 0.8;
-                    element.rotation.y += 0.01;
-                    
-                    const orbitTime = time * 0.2;
-                    const orbitRadius = element.userData.orbitRadius || 0;
-                    element.position.x = element.userData.originalX + Math.cos(orbitTime) * orbitRadius * 0.4;
-                    element.position.z = element.userData.originalZ + Math.sin(orbitTime) * orbitRadius * 0.4;
+            document.getElementById('leadingStrand').textContent = sequence;
+            document.getElementById('laggingStrand').textContent = complement;
+            document.getElementById('lengthDisplay').textContent = sequence.length;
+            
+            gameState.dnaStrands.leading = sequence.split('');
+            gameState.dnaStrands.lagging = complement.split('');
+            gameState.dnaStrands.leadingNew = new Array(sequence.length).fill(null);
+            gameState.dnaStrands.laggingNew = new Array(sequence.length).fill(null);
+        }
+
+        function updateCurrentStepInstruction() {
+            const instructionElement = document.getElementById('currentStepInstruction');
+            const isActive = gameState.running || gameState.placedEnzymes.length > 0;
+            
+            document.querySelectorAll('.tool-item, .nucleotide-item').forEach(item => {
+                item.classList.remove('highlighted');
+            });
+            
+            if (!isActive) {
+                instructionElement.innerHTML = '<strong>Step 1:</strong> Click START button to begin, then drag Helicase enzyme to the DNA center to unwind the double helix.';
+                instructionElement.className = 'current-step inactive';
+                return;
+            }
+            
+            instructionElement.className = 'current-step';
+            
+            if (!gameState.helicaseActive && gameState.placedEnzymes.filter(e => e.type === 'helicase').length === 0) {
+                instructionElement.innerHTML = '<strong>Step 1:</strong> Drag Helicase enzyme to the DNA center to begin unwinding the double helix.';
+                document.querySelector('[data-enzyme="helicase"]').classList.add('highlighted');
+            } else if (gameState.helicaseActive && gameState.primaseCount < 2) {
+                if (gameState.primaseCount === 0) {
+                    instructionElement.innerHTML = '<strong>Step 2:</strong> Drag the first Primase to the 3\' end of the leading template strand (right side).';
+                } else {
+                    instructionElement.innerHTML = '<strong>Step 2:</strong> Drag the second Primase to the 3\' end of the lagging template strand (left side).';
                 }
-            });
-            
-            renderer.render(scene, camera);
+                document.querySelector('[data-enzyme="primase"]').classList.add('highlighted');
+            } else if (gameState.polymeraseCount < 2) {
+                if (!gameState.running) {
+                    instructionElement.innerHTML = '<strong>Step 2.5:</strong> Click START button to activate enzymes and create RNA primers.';
+                } else if (gameState.polymeraseCount === 0) {
+                    instructionElement.innerHTML = '<strong>Step 3:</strong> Drag the first DNA Polymerase III near the leading strand primer.';
+                } else {
+                    instructionElement.innerHTML = '<strong>Step 3:</strong> Drag the second DNA Polymerase III near the lagging strand primer.';
+                }
+                document.querySelector('[data-enzyme="polymerase"]').classList.add('highlighted');
+            } else if (!gameState.polymeraseActive) {
+                instructionElement.innerHTML = '<strong>Step 3.5:</strong> Both DNA Polymerase III placed! They will activate automatically when primers are ready.';
+            } else {
+                const leadingTotal = gameState.dnaSequence.length - 4;
+                const laggingTotal = 18;
+                const leadingComplete = gameState.nucleotideCount.leading >= leadingTotal;
+                const laggingManuallyComplete = gameState.nucleotideCount.lagging >= laggingTotal;
+                
+                if (gameState.nucleotideCount.leading + gameState.nucleotideCount.lagging === 0) {
+                    instructionElement.innerHTML = '<strong>Step 4:</strong> Drag nucleotides (A, T, G, C) to empty positions. Follow base pairing rules: A-T and G-C.';
+                    document.querySelectorAll('[data-base="A"], [data-base="T"], [data-base="G"], [data-base="C"]').forEach(item => {
+                        item.classList.add('highlighted');
+                    });
+                } else if (!leadingComplete) {
+                    const leadingNeeded = leadingTotal - gameState.nucleotideCount.leading;
+                    instructionElement.innerHTML = '<strong>Step 4:</strong> Continue adding nucleotides to the leading strand. ' + leadingNeeded + ' bases remaining.';
+                    document.querySelectorAll('[data-base="A"], [data-base="T"], [data-base="G"], [data-base="C"]').forEach(item => {
+                        item.classList.add('highlighted');
+                    });
+                } else if (!laggingManuallyComplete) {
+                    const laggingNeeded = laggingTotal - gameState.nucleotideCount.lagging;
+                    instructionElement.innerHTML = '<strong>Step 4:</strong> Continue adding nucleotides to the lagging strand. ' + laggingNeeded + ' bases remaining.';
+                    document.querySelectorAll('[data-base="A"], [data-base="T"], [data-base="G"], [data-base="C"]').forEach(item => {
+                        item.classList.add('highlighted');
+                    });
+                } else if (gameState.pol1Count === 0) {
+                    instructionElement.innerHTML = '<strong>Step 5:</strong> All nucleotides added! Drag DNA Polymerase I to automatically replace ALL RNA primers with DNA.';
+                    document.querySelector('[data-enzyme="pol1"]').classList.add('highlighted');
+                } else if (!gameState.pol1Active) {
+                    instructionElement.innerHTML = '<strong>Step 5.5:</strong> DNA Polymerase I placed! It will automatically replace all RNA primers with DNA bases.';
+                } else if (!gameState.ligaseActive) {
+                    instructionElement.innerHTML = '<strong>Step 6:</strong> All RNA primers replaced with DNA! Drag DNA Ligase to join all Okazaki fragments.';
+                    document.querySelector('[data-enzyme="ligase"]').classList.add('highlighted');
+                } else if (gameState.ligaseProcessing) {
+                    instructionElement.innerHTML = '<strong>Step 6 In Progress:</strong> DNA Ligase is actively joining Okazaki fragments...';
+                } else {
+                    instructionElement.innerHTML = '<strong>Complete!</strong> DNA replication finished! All fragments joined.';
+                }
+            }
         }
 
-        // Create text texture for sphere surface with better visibility
-        function createTextTexture(text, fontSize = 64, textColor = 'white') {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.width = 512;
-            canvas.height = 512;
+        function updateStatusDisplay() {
+            document.getElementById('helicaseStatus').textContent = gameState.helicaseActive ? 'Active' : 'Inactive';
+            document.getElementById('helicaseStatus').className = gameState.helicaseActive ? 'status-active' : 'status-inactive';
             
-            // Clear canvas with semi-transparent background
-            context.clearRect(0, 0, canvas.width, canvas.height);
-            context.fillStyle = 'rgba(0,0,0,0.8)';
-            context.fillRect(0, 0, canvas.width, canvas.height);
+            document.getElementById('primaseStatus').textContent = gameState.primaseActive ? 'Active' : 'Inactive';
+            document.getElementById('primaseStatus').className = gameState.primaseActive ? 'status-active' : 'status-inactive';
             
-            // Set up text styling
-            context.font = `Bold ${fontSize}px Arial`;
-            context.textAlign = 'center';
-            context.textBaseline = 'middle';
+            document.getElementById('polymeraseStatus').textContent = gameState.polymeraseActive ? 'Active' : 'Inactive';
+            document.getElementById('polymeraseStatus').className = gameState.polymeraseActive ? 'status-active' : 'status-inactive';
             
-            // Draw text with thick outline for maximum visibility
-            context.strokeStyle = 'black';
-            context.lineWidth = 12;
-            context.strokeText(text, 256, 256);
+            document.getElementById('polIStatus').textContent = gameState.pol1Active ? 'Active' : 'Inactive';
+            document.getElementById('polIStatus').className = gameState.pol1Active ? 'status-active' : 'status-inactive';
             
-            context.fillStyle = textColor;
-            context.fillText(text, 256, 256);
+            document.getElementById('ligaseStatus').textContent = gameState.ligaseActive ? 'Active' : 'Inactive';
+            document.getElementById('ligaseStatus').className = gameState.ligaseActive ? 'status-active' : 'status-inactive';
             
-            const texture = new THREE.CanvasTexture(canvas);
-            texture.needsUpdate = true;
-            return texture;
+            updateCurrentStepInstruction();
         }
 
-        // Create simple text sprite for labels
-        function createTextSprite(text, size, color = 'white') {
-            const canvas = document.createElement('canvas');
-            const context = canvas.getContext('2d');
-            canvas.width = 128;
-            canvas.height = 128;
-            
-            context.font = 'Bold 32px Arial';
-            context.textAlign = 'center';
-            context.textBaseline = 'middle';
-            context.strokeStyle = 'black';
-            context.lineWidth = 4;
-            context.strokeText(text, 64, 64);
-            context.fillStyle = color;
-            context.fillText(text, 64, 64);
-            
-            const texture = new THREE.CanvasTexture(canvas);
-            const material = new THREE.SpriteMaterial({ 
-                map: texture,
-                transparent: true
-            });
-            const sprite = new THREE.Sprite(material);
-            sprite.scale.set(size, size, 1);
-            
-            return sprite;
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.classList.add('show');
+            setTimeout(() => {
+                errorDiv.classList.remove('show');
+            }, 4000);
         }
 
-        // Create proper 3D DNA double helix structure (shorter and clearer)
-        function createDNAHelix() {
-            if (dnaGroup) {
-                scene.remove(dnaGroup);
+        function canPlaceEnzyme(enzymeType) {
+            switch (enzymeType) {
+                case 'helicase':
+                    return gameState.placedEnzymes.filter(e => e.type === 'helicase').length === 0;
+                case 'primase':
+                    return gameState.helicaseActive && gameState.primaseCount < 2;
+                case 'polymerase':
+                    return gameState.primaseCount >= 2 && gameState.polymeraseCount < 2;
+                case 'pol1':
+                    const leadingComplete = gameState.nucleotideCount.leading >= gameState.dnaSequence.length - 4;
+                    const laggingComplete = gameState.nucleotideCount.lagging >= 18;
+                    return gameState.polymeraseCount >= 2 && leadingComplete && laggingComplete && gameState.pol1Count === 0;
+                case 'ligase':
+                    return gameState.pol1Active && !gameState.ligaseActive;
+                default:
+                    return false;
+            }
+        }
+
+        function processLigaseActivity() {
+            if (!gameState.ligaseActive || !gameState.running || !gameState.ligaseProcessing) return;
+            
+            gameState.ligaseTimer++;
+            
+            // Fix gaps progressively
+            if (gameState.ligaseTimer === 60) {
+                // Fix first gap
+                gameState.gapsFixed.push(11);
+                showError('DNA Ligase joined fragments 1 and 2!');
+            } else if (gameState.ligaseTimer === 120) {
+                // Fix second gap
+                gameState.gapsFixed.push(22);
+                showError('DNA Ligase joined fragments 2 and 3!');
+            }
+            
+            if (gameState.ligaseTimer >= 180) {
+                const ligaseIndex = gameState.placedEnzymes.findIndex(e => e.type === 'ligase');
+                if (ligaseIndex !== -1) {
+                    gameState.placedEnzymes.splice(ligaseIndex, 1);
+                }
+                
+                gameState.ligaseProcessing = false;
+                gameState.allGapsFixed = true;
+                showError('DNA Ligase completed joining all fragments and detached! All enzymes have finished their work.');
+                
+                setTimeout(() => {
+                    document.getElementById('completionOverlay').classList.add('show');
+                }, 5000);
+            }
+        }
+
+        function drawDNA() {
+            const sequence = gameState.dnaSequence;
+            const baseWidth = Math.min(26, (canvas.width - 200) / sequence.length);
+            const startX = canvas.width / 2 - (sequence.length * baseWidth / 2);
+            const leadingY = canvas.height / 2 - 80 - gameState.strandSeparation;
+            const laggingY = canvas.height / 2 + 80 + gameState.strandSeparation;
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = '#0f0f23';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Template strand labels
+            ctx.fillStyle = '#FFD700';
+            ctx.font = 'bold 20px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText("5'", startX - 60, leadingY + 6);
+            ctx.fillText("3'", startX + sequence.length * baseWidth + 50, leadingY + 6);
+            ctx.fillText("3'", startX - 60, laggingY + 6);
+            ctx.fillText("5'", startX + sequence.length * baseWidth + 50, laggingY + 6);
+
+            // Draw template strand backbones
+            ctx.strokeStyle = '#8B4513';
+            ctx.lineWidth = 6;
+            ctx.beginPath();
+            ctx.moveTo(startX - 40, leadingY - 11 - 3);
+            ctx.lineTo(startX + sequence.length * baseWidth + 40, leadingY - 11 - 3);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(startX - 40, laggingY + 11 + 3);
+            ctx.lineTo(startX + sequence.length * baseWidth + 40, laggingY + 11 + 3);
+            ctx.stroke();
+
+            // Draw template bases
+            for (let i = 0; i < sequence.length; i++) {
+                const x = startX + i * baseWidth;
+                const boxSize = 22;
+                
+                const leadingBase = gameState.dnaStrands.leading[i];
+                ctx.fillStyle = BASE_COLORS[leadingBase];
+                ctx.fillRect(x - boxSize/2, leadingY - boxSize/2, boxSize, boxSize);
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x - boxSize/2, leadingY - boxSize/2, boxSize, boxSize);
+                ctx.fillStyle = '#000';
+                ctx.font = 'bold 12px Arial';
+                ctx.fillText(leadingBase, x, leadingY + 4);
+
+                const laggingBase = gameState.dnaStrands.lagging[i];
+                ctx.fillStyle = BASE_COLORS[laggingBase];
+                ctx.fillRect(x - boxSize/2, laggingY - boxSize/2, boxSize, boxSize);
+                ctx.strokeStyle = '#fff';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(x - boxSize/2, laggingY - boxSize/2, boxSize, boxSize);
+                ctx.fillStyle = '#000';
+                ctx.fillText(laggingBase, x, laggingY + 4);
+
+                if (gameState.strandSeparation < 50) {
+                    ctx.strokeStyle = '#87CEEB';
+                    ctx.lineWidth = 2;
+                    ctx.setLineDash([6, 6]);
+                    ctx.beginPath();
+                    ctx.moveTo(x, leadingY + boxSize/2);
+                    ctx.lineTo(x, laggingY - boxSize/2);
+                    ctx.stroke();
+                    ctx.setLineDash([]);
+                }
             }
 
-            dnaGroup = new THREE.Group();
-            const helixRadius = 2.5; // Increased for better visibility
-            const helixHeight = numBases * 1.0; // Increased spacing
-            const angleStep = (2 * Math.PI) / 10.4;
-
-            const backbone1Points = [];
-            const backbone2Points = [];
-
-            for (let i = 0; i < numBases; i++) {
-                const angle = i * angleStep;
-                const y = (i * helixHeight / numBases) - helixHeight / 2;
-                
-                // Apply unwinding effect when helicase is active
-                let separation = 0;
-                if (replicationState.helicase && i >= replicationState.forkPosition - 4) {
-                    const unwindFactor = Math.max(0, Math.min(1, (i - replicationState.forkPosition + 6) / 8));
-                    separation = unwindFactor * 4.0;
-                }
-                
-                const x1 = Math.cos(angle) * (helixRadius + separation * 0.5);
-                const z1 = Math.sin(angle) * (helixRadius + separation * 0.5);
-                const x2 = Math.cos(angle + Math.PI) * (helixRadius + separation * 0.5);
-                const z2 = Math.sin(angle + Math.PI) * (helixRadius + separation * 0.5);
-
-                backbone1Points.push(new THREE.Vector3(x1, y, z1));
-                backbone2Points.push(new THREE.Vector3(x2, y, z2));
-
-                const base1 = dnaSequence[i % dnaSequence.length];
-                const base2 = BASE_PAIRS[base1]?.complement || 'N';
-
-                // Create nucleotide bases extending from backbones toward center
-                const baseLength = 1.2;
-                const baseHeight = 0.15;
-                const baseWidth = 0.25;
-
-                // Base 1 - extending from backbone toward center
-                const base1Geometry = new THREE.BoxGeometry(baseWidth, baseHeight, baseLength);
-                const base1Material = new THREE.MeshStandardMaterial({ 
-                    color: BASE_COLORS[base1] || 0xcccccc,
-                    metalness: 0.1,
-                    roughness: 0.3
-                });
-                const base1Mesh = new THREE.Mesh(base1Geometry, base1Material);
-                
-                const base1X = x1 * 0.7;
-                const base1Z = z1 * 0.7;
-                base1Mesh.position.set(base1X, y, base1Z);
-                base1Mesh.rotation.y = Math.atan2(-base1X, -base1Z);
-                dnaGroup.add(base1Mesh);
-
-                // Base 2 - extending from backbone toward center
-                const base2Geometry = new THREE.BoxGeometry(baseWidth, baseHeight, baseLength);
-                const base2Material = new THREE.MeshStandardMaterial({ 
-                    color: BASE_COLORS[base2] || 0xcccccc,
-                    metalness: 0.1,
-                    roughness: 0.3
-                });
-                const base2Mesh = new THREE.Mesh(base2Geometry, base2Material);
-                
-                const base2X = x2 * 0.7;
-                const base2Z = z2 * 0.7;
-                base2Mesh.position.set(base2X, y, base2Z);
-                base2Mesh.rotation.y = Math.atan2(-base2X, -base2Z);
-                dnaGroup.add(base2Mesh);
-
-                // Base labels
-                const base1Label = createTextSprite(base1, 0.8);
-                base1Label.position.set(base1X, y + baseHeight/2 + 0.2, base1Z);
-                dnaGroup.add(base1Label);
-
-                const base2Label = createTextSprite(base2, 0.8);
-                base2Label.position.set(base2X, y + baseHeight/2 + 0.2, base2Z);
-                dnaGroup.add(base2Label);
-
-                // Hydrogen bonds
-                const bondCount = BASE_PAIRS[base1]?.hBonds || 2;
-                const inner1X = x1 * 0.35;
-                const inner1Z = z1 * 0.35;
-                const inner2X = x2 * 0.35;
-                const inner2Z = z2 * 0.35;
-                
-                const currentSeparation = Math.sqrt((x1-x2)**2 + (z1-z2)**2);
-                if (currentSeparation < helixRadius * 4) {
-                    for (let j = 0; j < bondCount; j++) {
-                        const offset = (j - (bondCount - 1) / 2) * 0.1;
+            // Draw RNA primers (only show if Pol I hasn't replaced them yet)
+            if (!gameState.pol1Active && (gameState.rnaPrimers.leading || gameState.rnaPrimers.lagging)) {
+                ctx.font = 'bold 10px Arial';
+                ctx.textAlign = 'center';
                         
-                        const bondGeometry = new THREE.BufferGeometry();
-                        const positions = [];
+                // Leading strand RNA primer
+                if (gameState.rnaPrimers.leading) {
+                    const primerY = leadingY + 45;
+                    const templateBases = gameState.dnaStrands.leading.slice(-4);
+                    const primerBases = templateBases.map(base => {
+                        const complement = { 'A': 'U', 'T': 'A', 'G': 'C', 'C': 'G' };
+                        return complement[base];
+                    });
+                            
+                    for (let i = 0; i < primerBases.length; i++) {
+                        const templateIndex = sequence.length - 4 + i;
+                        const primerX = startX + templateIndex * baseWidth;
                         
-                        const segments = 8;
-                        for (let k = 0; k < segments; k += 2) {
-                            const t1 = k / segments;
-                            const t2 = (k + 1) / segments;
-                            
-                            const x1_seg = inner1X + (inner2X - inner1X) * t1;
-                            const y1_seg = y + offset;
-                            const z1_seg = inner1Z + (inner2Z - inner1Z) * t1;
-                            
-                            const x2_seg = inner1X + (inner2X - inner1X) * t2;
-                            const y2_seg = y + offset;
-                            const z2_seg = inner1Z + (inner2Z - inner1Z) * t2;
-                            
-                            positions.push(x1_seg, y1_seg, z1_seg, x2_seg, y2_seg, z2_seg);
+                        ctx.fillStyle = '#90EE90';
+                        ctx.fillRect(primerX - 10, primerY - 10, 20, 20);
+                        ctx.strokeStyle = '#228B22';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(primerX - 10, primerY - 10, 20, 20);
+                        ctx.fillStyle = '#000';
+                        ctx.font = 'bold 10px Arial';
+                        ctx.fillText(primerBases[i], primerX, primerY + 3);
+                        
+                        if (i > 0) {
+                            const prevPrimerX = startX + (sequence.length - 4 + i - 1) * baseWidth;
+                            ctx.strokeStyle = '#228B22';
+                            ctx.lineWidth = 3;
+                            ctx.beginPath();
+                            ctx.moveTo(prevPrimerX + 10, primerY);
+                            ctx.lineTo(primerX - 10, primerY);
+                            ctx.stroke();
                         }
                         
-                        bondGeometry.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
-                        
-                        const bondMaterial = new THREE.LineBasicMaterial({ 
-                            color: 0x87CEEB,
-                            transparent: true,
-                            opacity: Math.max(0.4, 0.9 - separation * 0.2)
-                        });
-                        
-                        const bond = new THREE.LineSegments(bondGeometry, bondMaterial);
-                        dnaGroup.add(bond);
+                        ctx.strokeStyle = '#87CEEB';
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([4, 4]);
+                        ctx.beginPath();
+                        ctx.moveTo(primerX, primerY - 10);
+                        ctx.lineTo(primerX, leadingY + 11);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
                     }
+                    
+                    ctx.fillStyle = '#FFD700';
+                    ctx.font = 'bold 14px Arial';
+                    ctx.fillText("5'", startX + sequence.length * baseWidth + 25, primerY + 4);
+                    
+                    ctx.fillStyle = '#228B22';
+                    ctx.font = 'bold 9px Arial';
+                    ctx.fillText('RNA Primer', startX + (sequence.length - 2) * baseWidth, primerY - 20);
                 }
-            }
-
-            // Create sugar-phosphate backbones
-            if (backbone1Points.length > 1) {
-                const curve1 = new THREE.CatmullRomCurve3(backbone1Points);
-                const geometry1 = new THREE.TubeGeometry(curve1, backbone1Points.length * 2, 0.15, 8, false);
-                const material1 = new THREE.MeshStandardMaterial({ 
-                    color: 0xDD4444,
-                    metalness: 0.2,
-                    roughness: 0.4
-                });
-                const backbone1 = new THREE.Mesh(geometry1, material1);
-                dnaGroup.add(backbone1);
-
-                const curve2 = new THREE.CatmullRomCurve3(backbone2Points);
-                const geometry2 = new THREE.TubeGeometry(curve2, backbone2Points.length * 2, 0.15, 8, false);
-                const material2 = new THREE.MeshStandardMaterial({ 
-                    color: 0xDD4444,
-                    metalness: 0.2,
-                    roughness: 0.4
-                });
-                const backbone2 = new THREE.Mesh(geometry2, material2);
-                dnaGroup.add(backbone2);
-
-                // Add strand-specific labels only when replication starts
-                if (replicationState.replicationStarted && backbone1Points.length > 0) {
-                    const createStrandLabel = (text, position, color, size = 1.5) => {
-                        const canvas = document.createElement('canvas');
-                        const context = canvas.getContext('2d');
-                        canvas.width = 200;
-                        canvas.height = 60;
+                
+                // Lagging strand RNA primer - first fragment
+                if (gameState.rnaPrimers.lagging) {
+                    const primerY = laggingY - 45;
+                    const templateBases = gameState.dnaStrands.lagging.slice(0, 4);
+                    const primerBases = templateBases.map(base => {
+                        const complement = { 'A': 'U', 'T': 'A', 'G': 'C', 'C': 'G' };
+                        return complement[base];
+                    });
+                    
+                    ctx.fillStyle = '#FFD700';
+                    ctx.font = 'bold 14px Arial';
+                    ctx.fillText("5'", startX - 25, primerY + 4);
+                    
+                    for (let i = 0; i < primerBases.length; i++) {
+                        const primerX = startX + i * baseWidth;
                         
-                        context.font = 'Bold 24px Arial';
-                        context.textAlign = 'center';
-                        context.textBaseline = 'middle';
-                        context.fillStyle = 'rgba(0,0,0,0.9)';
-                        context.fillRect(0, 0, 200, 60);
-                        context.strokeStyle = 'black';
-                        context.lineWidth = 3;
-                        context.strokeText(text, 100, 30);
-                        context.fillStyle = color;
-                        context.fillText(text, 100, 30);
+                        ctx.fillStyle = '#90EE90';
+                        ctx.fillRect(primerX - 10, primerY - 10, 20, 20);
+                        ctx.strokeStyle = '#228B22';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(primerX - 10, primerY - 10, 20, 20);
+                        ctx.fillStyle = '#000';
+                        ctx.font = 'bold 10px Arial';
+                        ctx.fillText(primerBases[i], primerX, primerY + 3);
+
+                        if (i > 0) {
+                            const prevPrimerX = startX + (i - 1) * baseWidth;
+                            ctx.strokeStyle = '#228B22';
+                            ctx.lineWidth = 3;
+                            ctx.beginPath();
+                            ctx.moveTo(prevPrimerX + 10, primerY);
+                            ctx.lineTo(primerX - 10, primerY);
+                            ctx.stroke();
+                        }
                         
-                        const texture = new THREE.CanvasTexture(canvas);
-                        const material = new THREE.SpriteMaterial({ 
-                            map: texture,
-                            transparent: true
+                        ctx.strokeStyle = '#87CEEB';
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([4, 4]);
+                        ctx.beginPath();
+                        ctx.moveTo(primerX, primerY + 10);
+                        ctx.lineTo(primerX, laggingY - 11);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                    
+                    ctx.fillStyle = '#228B22';
+                    ctx.font = 'bold 9px Arial';
+                    ctx.fillText('RNA Primer', startX + 2 * baseWidth, primerY + 20);
+                }
+
+                // Draw RNA primers for additional lagging fragments
+                gameState.laggingFragments.forEach((fragment, index) => {
+                    if (fragment.primerAdded && index > 0) {
+                        const fragmentStartX = startX + fragment.start * baseWidth;
+                        const primerY = laggingY - 45;
+                        
+                        const templateBases = gameState.dnaStrands.lagging.slice(fragment.start, fragment.start + 4);
+                        const primerBases = templateBases.map(base => {
+                            const complement = { 'A': 'U', 'T': 'A', 'G': 'C', 'C': 'G' };
+                            return complement[base];
                         });
-                        const sprite = new THREE.Sprite(material);
-                        sprite.position.copy(position);
-                        sprite.scale.set(size, size * 0.3, 1);
                         
-                        return sprite;
-                    };
+                        for (let i = 0; i < primerBases.length; i++) {
+                            const primerX = fragmentStartX + i * baseWidth;
+                            
+                            ctx.fillStyle = '#90EE90';
+                            ctx.fillRect(primerX - 10, primerY - 10, 20, 20);
+                            ctx.strokeStyle = '#228B22';
+                            ctx.lineWidth = 2;
+                            ctx.strokeRect(primerX - 10, primerY - 10, 20, 20);
+                            ctx.fillStyle = '#000';
+                            ctx.font = 'bold 10px Arial';
+                            ctx.fillText(primerBases[i], primerX, primerY + 3);
 
-                    // Leading strand labels (continuous synthesis)
-                    const topTip1 = backbone1Points[0].clone().add(new THREE.Vector3(0, 1.5, 0));
-                    const bottomTip1 = backbone1Points[backbone1Points.length-1].clone().add(new THREE.Vector3(0, -1.5, 0));
-                    
-                    // Lagging strand labels (discontinuous synthesis)
-                    const topTip2 = backbone2Points[0].clone().add(new THREE.Vector3(0, 1.5, 0));
-                    const bottomTip2 = backbone2Points[backbone2Points.length-1].clone().add(new THREE.Vector3(0, -1.5, 0));
-
-                    const label5_leading = createStrandLabel("5' LEADING (Continuous)", topTip1, '#4CAF50');
-                    const label3_leading = createStrandLabel("3' LEADING", bottomTip1, '#4CAF50');
-                    
-                    const label3_lagging = createStrandLabel("3' LAGGING (Okazaki)", topTip2, '#FFC107');
-                    const label5_lagging = createStrandLabel("5' LAGGING", bottomTip2, '#FFC107');
-                    
-                    dnaGroup.add(label5_leading);
-                    dnaGroup.add(label3_leading);
-                    dnaGroup.add(label3_lagging);
-                    dnaGroup.add(label5_lagging);
-
-                    // Show Okazaki fragments on lagging strand
-                    if (replicationState.okazakiFragments.length > 0) {
-                        replicationState.okazakiFragments.forEach((fragment, index) => {
-                            const fragmentPosition = backbone2Points[Math.floor((index + 1) * backbone2Points.length / 4)];
-                            if (fragmentPosition) {
-                                const fragmentLabel = createStrandLabel(`Fragment ${index + 1}`, 
-                                    fragmentPosition.clone().add(new THREE.Vector3(-2, 0, 0)), '#FF9800', 0.8);
-                                dnaGroup.add(fragmentLabel);
+                            if (i > 0) {
+                                const prevPrimerX = fragmentStartX + (i - 1) * baseWidth;
+                                ctx.strokeStyle = '#228B22';
+                                ctx.lineWidth = 3;
+                                ctx.beginPath();
+                                ctx.moveTo(prevPrimerX + 10, primerY);
+                                ctx.lineTo(primerX - 10, primerY);
+                                ctx.stroke();
                             }
-                        });
+                            
+                            ctx.strokeStyle = '#87CEEB';
+                            ctx.lineWidth = 2;
+                            ctx.setLineDash([4, 4]);
+                            ctx.beginPath();
+                            ctx.moveTo(primerX, primerY + 10);
+                            ctx.lineTo(primerX, laggingY - 11);
+                            ctx.stroke();
+                            ctx.setLineDash([]);
+                        }
+                        
+                        ctx.fillStyle = '#228B22';
+                        ctx.font = 'bold 9px Arial';
+                        ctx.fillText('RNA Primer', fragmentStartX + 2 * baseWidth, primerY + 20);
+                    }
+                });
+            }
+
+            // Draw newly synthesized nucleotides
+            const boxSize = 22;
+            
+            // Leading strand synthesis
+            if (gameState.polymeraseActive || gameState.pol1Active) {
+                // Find the extent of synthesized leading strand
+                let leadingStart = -1, leadingEnd = -1;
+                for (let i = 0; i < sequence.length; i++) {
+                    if (gameState.dnaStrands.leadingNew[i]) {
+                        if (leadingStart === -1) leadingStart = i;
+                        leadingEnd = i;
+                    }
+                }
+                
+                // Draw leading strand labels for newly synthesized DNA
+                if (leadingStart !== -1 && gameState.nucleotideCount.leading > 0) {
+                    const newY = leadingY + 45;
+                    ctx.fillStyle = '#FFD700';
+                    ctx.font = 'bold 14px Arial';
+                    ctx.textAlign = 'center';
+                    
+                    // Show 3' end label at the leftmost DNA nucleotide position (not primer position)
+                    let leftmostDNA = -1;
+                    for (let i = 0; i < sequence.length; i++) {
+                        if (gameState.dnaStrands.leadingNew[i] && (!gameState.pol1Active || i < sequence.length - 4)) {
+                            leftmostDNA = i;
+                            break;
+                        }
+                    }
+                    
+                    if (leftmostDNA !== -1) {
+                        ctx.fillText("3'", startX + leftmostDNA * baseWidth - 25, newY + 4);
+                    }
+                    
+                    // Show 5' end at rightmost position when RNA primers are replaced with DNA (Pol I active)
+                    if (gameState.pol1Active) {
+                        ctx.fillText("5'", startX + leadingEnd * baseWidth + 25, newY + 4);
+                    }
+                }
+                
+                for (let i = sequence.length - 1; i >= 0; i--) {
+                    const x = startX + i * baseWidth;
+                    const newY = leadingY + 45;
+                    
+                    if (gameState.dnaStrands.leadingNew[i]) {
+                        const newBase = gameState.dnaStrands.leadingNew[i];
+                        
+                        ctx.fillStyle = BASE_COLORS[newBase];
+                        ctx.fillRect(x - boxSize/2, newY - boxSize/2, boxSize, boxSize);
+                        
+                        if (gameState.pol1Active && i >= sequence.length - 4) {
+                            ctx.strokeStyle = '#9C27B0';
+                            ctx.lineWidth = 4;
+                        } else {
+                            ctx.strokeStyle = '#FFFF00';
+                            ctx.lineWidth = 3;
+                        }
+                        ctx.strokeRect(x - boxSize/2, newY - boxSize/2, boxSize, boxSize);
+                        
+                        ctx.fillStyle = '#000000';
+                        ctx.font = 'bold 12px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(newBase, x, newY + 4);
+
+                        ctx.strokeStyle = '#00FF00';
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([4, 4]);
+                        ctx.beginPath();
+                        ctx.moveTo(x, newY - boxSize/2);
+                        ctx.lineTo(x, leadingY + boxSize/2);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                }
+                
+                // Draw leading strand backbone as horizontal brown line
+                let leadingBackboneStart = -1, leadingBackboneEnd = -1;
+                for (let i = 0; i < sequence.length; i++) {
+                    if (gameState.dnaStrands.leadingNew[i]) {
+                        if (leadingBackboneStart === -1) leadingBackboneStart = i;
+                        leadingBackboneEnd = i;
+                    }
+                }
+                
+                if (leadingBackboneStart !== -1 && leadingBackboneEnd !== -1) {
+                    const newY = leadingY + 45;
+                    ctx.strokeStyle = '#8B4513'; // Brown color like template strands
+                    ctx.lineWidth = 6;
+                    ctx.beginPath();
+                    ctx.moveTo(startX + leadingBackboneStart * baseWidth - boxSize/2, newY + boxSize/2 - 2);
+                    ctx.lineTo(startX + leadingBackboneEnd * baseWidth + boxSize/2, newY + boxSize/2 - 2);
+                    ctx.stroke();
+                    
+                    // Draw bond animations on top of backbone
+                    for (let i = 0; i < sequence.length - 1; i++) {
+                        const x = startX + i * baseWidth;
+                        const nextX = startX + (i + 1) * baseWidth;
+                        
+                        if (gameState.dnaStrands.leadingNew[i] && gameState.dnaStrands.leadingNew[i + 1]) {
+                            const bondColor = getBondAnimationColor(i, 'leading');
+                            if (bondColor !== '#8B4513' && !(gameState.gapsFixed && gameState.gapsFixed.includes(i))) { // Only draw if there's an animation
+                                ctx.strokeStyle = bondColor;
+                                ctx.lineWidth = 8;
+                                ctx.beginPath();
+                                ctx.moveTo(x + boxSize/2, newY + boxSize/2 - 2);
+                                ctx.lineTo(nextX - boxSize/2, newY + boxSize/2 - 2);
+                                ctx.stroke();
+                            }
+                        }
                     }
                 }
             }
 
-            scene.add(dnaGroup);
-        }
-
-        function createFloatingElements() {
-            // Clear existing elements
-            floatingElements.forEach(element => scene.remove(element));
-            floatingElements = [];
-
-            // Create enzymes with text embedded inside spheres
-            Object.entries(ENZYMES).forEach(([key, enzyme], index) => {
-                if (replicationState[key]) return;
-
-                const enzymeGroup = new THREE.Group();
+            // Lagging strand synthesis
+            if (gameState.polymeraseActive || gameState.ligaseActive) {
+                const newY = laggingY - 45;
                 
-                // Create texture with enzyme name for sphere surface
-                const textTexture = createTextTexture(enzyme.name, 48, 'white');
-                
-                const geometry = new THREE.SphereGeometry(1.8, 32, 32);
-                const material = new THREE.MeshStandardMaterial({ 
-                    color: enzyme.color,
-                    emissive: enzyme.color,
-                    emissiveIntensity: 0.2,
-                    map: textTexture,  // Text embedded in sphere
-                    metalness: 0.1,
-                    roughness: 0.3
-                });
-                const mesh = new THREE.Mesh(geometry, material);
-                mesh.userData = { 
-                    enzymeType: key, 
-                    type: 'enzyme',
-                    draggable: true
-                };
-                enzymeGroup.add(mesh);
+                // Draw lagging strand labels for newly synthesized DNA
+                let laggingStart = -1, laggingEnd = -1;
+                for (let i = 0; i < sequence.length; i++) {
+                    if (gameState.dnaStrands.laggingNew[i]) {
+                        if (laggingStart === -1) laggingStart = i;
+                        laggingEnd = i;
+                    }
+                }
 
-                const angle = (index / Object.keys(ENZYMES).length) * Math.PI * 2;
-                const radius = 16;
-                const position = {
-                    x: Math.cos(angle) * radius,
-                    y: Math.sin(angle * 0.7) * 7,
-                    z: Math.sin(angle + Math.PI/3) * 7
-                };
-                enzymeGroup.position.set(position.x, position.y, position.z);
-
-                enzymeGroup.userData = { 
-                    originalY: position.y,
-                    originalX: position.x,
-                    originalZ: position.z,
-                    enzymeType: key,
-                    type: 'enzyme',
-                    isFloating: true,
-                    orbitRadius: 2.0
-                };
-
-                scene.add(enzymeGroup);
-                floatingElements.push(enzymeGroup);
-            });
-
-            // Create nucleotides as small rectangular boxes with attached labels (like DNA structure)
-            const nucleotideTypes = ['A', 'T', 'G', 'C'];
-            nucleotideTypes.forEach((base, index) => {
-                for (let copy = 0; copy < 3; copy++) {
-                    const nucleotideGroup = new THREE.Group();
+                if (laggingStart !== -1 && gameState.nucleotideCount.lagging > 0) {
+                    ctx.fillStyle = '#FFD700';
+                    ctx.font = 'bold 14px Arial';
+                    ctx.textAlign = 'center';
                     
-                    // Small rectangular box like in DNA structure
-                    const geometry = new THREE.BoxGeometry(0.4, 0.2, 0.8);
-                    const material = new THREE.MeshStandardMaterial({ 
-                        color: BASE_COLORS[base],
-                        metalness: 0.1,
-                        roughness: 0.3
-                    });
-                    const mesh = new THREE.Mesh(geometry, material);
-                    mesh.userData = { 
-                        nucleotideType: base, 
-                        type: 'nucleotide',
-                        draggable: true
-                    };
-                    nucleotideGroup.add(mesh);
-
-                    // Label attached at fixed position on top (like DNA structure)
-                    const label = createTextSprite(base, 1.0);
-                    label.position.set(0, 0.3, 0); // Fixed position on top
-                    nucleotideGroup.add(label);
-
-                    const angle = ((index * 3 + copy) / (nucleotideTypes.length * 3)) * Math.PI * 2;
-                    const radius = 22;
-                    const position = {
-                        x: Math.cos(angle) * radius,
-                        y: Math.sin(angle * 0.5) * 9,
-                        z: Math.cos(angle + Math.PI/2) * 5 + 10
-                    };
-                    nucleotideGroup.position.set(position.x, position.y, position.z);
-
-                    nucleotideGroup.userData = { 
-                        originalY: position.y,
-                        originalX: position.x,
-                        originalZ: position.z,
-                        nucleotideType: base,
-                        type: 'nucleotide',
-                        isFloating: true,
-                        orbitRadius: 1.5
-                    };
-
-                    scene.add(nucleotideGroup);
-                    floatingElements.push(nucleotideGroup);
+                    // Show 3' end at rightmost position
+                    ctx.fillText("3'", startX + laggingEnd * baseWidth + 25, newY + 4);
+                    
+                    // Show 5' end at leftmost position when RNA primers are replaced with DNA (Pol I active)
+                    if (gameState.pol1Active) {
+                        ctx.fillText("5'", startX + laggingStart * baseWidth - 25, newY + 4);
+                    }
                 }
+                
+                // Draw all lagging strand bases first
+                for (let i = 0; i < sequence.length; i++) {
+                    const x = startX + i * baseWidth;
+                    
+                    if (gameState.dnaStrands.laggingNew[i]) {
+                        const newBase = gameState.dnaStrands.laggingNew[i];
+                        
+                        ctx.fillStyle = BASE_COLORS[newBase];
+                        ctx.fillRect(x - boxSize/2, newY - boxSize/2, boxSize, boxSize);
+                        
+                        let isPol1Primer = false;
+                        
+                        if (gameState.pol1Active) {
+                            const primerPositions = [
+                                [0, 1, 2, 3], [11, 12, 13, 14], 
+                                [22, 23, 24, 25]
+                            ];
+                            for (let positions of primerPositions) {
+                                if (positions.includes(i)) {
+                                    isPol1Primer = true;
+                                    break;
+                                }
+                            }
+                        }
+                        
+                        if (isPol1Primer) {
+                            ctx.strokeStyle = '#9C27B0';
+                            ctx.lineWidth = 4;
+                        } else {
+                            ctx.strokeStyle = '#FFFFFF';
+                            ctx.lineWidth = 3;
+                        }
+                        ctx.strokeRect(x - boxSize/2, newY - boxSize/2, boxSize, boxSize);
+                        
+                        ctx.fillStyle = '#000000';
+                        ctx.font = 'bold 12px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(newBase, x, newY + 4);
+
+                        ctx.strokeStyle = '#00FF00';
+                        ctx.lineWidth = 2;
+                        ctx.setLineDash([4, 4]);
+                        ctx.beginPath();
+                        ctx.moveTo(x, newY + boxSize/2);
+                        ctx.lineTo(x, laggingY - boxSize/2);
+                        ctx.stroke();
+                        ctx.setLineDash([]);
+                    }
+                }
+
+                // Draw lagging strand backbone as horizontal brown line
+                let laggingBackboneStart = -1, laggingBackboneEnd = -1;
+                for (let i = 0; i < sequence.length; i++) {
+                    if (gameState.dnaStrands.laggingNew[i]) {
+                        if (laggingBackboneStart === -1) laggingBackboneStart = i;
+                        laggingBackboneEnd = i;
+                    }
+                }
+                
+                if (laggingBackboneStart !== -1 && laggingBackboneEnd !== -1) {
+    ctx.strokeStyle = '#8B4513'; // Brown color like template strands
+    ctx.lineWidth = 6;
+    
+    if (gameState.pol1Active) {
+        // After Pol I: draw full horizontal brown line
+        ctx.beginPath();
+        ctx.moveTo(startX + laggingBackboneStart * baseWidth - boxSize/2, newY - boxSize/2 + 2);
+        ctx.lineTo(startX + laggingBackboneEnd * baseWidth + boxSize/2, newY - boxSize/2 + 2);
+        ctx.stroke();
+    } else {
+        // Before Pol I: draw brown line for each individual nucleotide (like leading strand)
+        for (let i = 0; i < sequence.length; i++) {
+            if (gameState.dnaStrands.laggingNew[i]) {
+                // Draw backbone segment for each nucleotide
+                ctx.beginPath();
+                ctx.moveTo(startX + i * baseWidth - boxSize/2, newY - boxSize/2 + 2);
+                ctx.lineTo(startX + i * baseWidth + boxSize/2, newY - boxSize/2 + 2);
+                ctx.stroke();
+            }
+        }
+    }
+                    
+                    // Draw gaps and bond animations on top of backbone
+                    for (let i = 1; i < sequence.length; i++) {
+                        const x = startX + i * baseWidth;
+                        const prevX = startX + (i - 1) * baseWidth;
+                        
+                        if (gameState.dnaStrands.laggingNew[i] && gameState.dnaStrands.laggingNew[i - 1]) {
+                            let shouldDrawBackbone = true;
+                            let isGapFixed = false;
+
+                            if (gameState.pol1Active) {
+                                if (i === 11 || i === 22) {
+                                    shouldDrawBackbone = false;
+                                    // Check if this gap has been fixed by ligase
+                                    if (gameState.gapsFixed && gameState.gapsFixed.includes(i)) {
+                                        isGapFixed = true;
+                                        shouldDrawBackbone = true;
+                                    }
+                                }
+                            }
+
+                            if (!shouldDrawBackbone && !isGapFixed) {
+                                // Show gap visually with bright orange dashed line and highlight
+                                ctx.strokeStyle = '#FF8C00';
+                                ctx.lineWidth = 6;
+                                ctx.setLineDash([6, 6]);
+                                ctx.beginPath();
+                                ctx.moveTo(prevX + boxSize/2, newY - boxSize/2 + 2);
+                                ctx.lineTo(x - boxSize/2, newY - boxSize/2 + 2);
+                                ctx.stroke();
+                                ctx.setLineDash([]);
+                                
+                                // Add gap highlight circle
+                                ctx.strokeStyle = '#FF4500';
+                                ctx.lineWidth = 3;
+                                ctx.beginPath();
+                                ctx.arc((prevX + x) / 2, newY - boxSize/2 + 2, 15, 0, Math.PI * 2);
+                                ctx.stroke();
+                                
+                                // Add "GAP" text
+                                ctx.fillStyle = '#FFFF00';
+                                ctx.font = 'bold 8px Arial';
+                                ctx.textAlign = 'center';
+                                ctx.fillText('GAP', (prevX + x) / 2, newY + 25);
+                            } else {
+                                let bondColor = getBondAnimationColor(i - 1, 'lagging');
+                                
+                                if (gameState.ligaseActive && (i === 11 || i === 22)) {
+    if (gameState.gapsFixed && gameState.gapsFixed.includes(i)) {
+        // Gap is fixed - don't draw any vertical line at all
+        continue; // Skip drawing this bond entirely
+    } else {
+        bondColor = '#FFFF00'; // Yellow for active ligase activity
+    }
+}
+                                
+                                // Only draw if there's an animation or ligase activity
+                                if (bondColor !== '#8B4513') {
+                                    ctx.strokeStyle = bondColor;
+                                    ctx.lineWidth = 8;
+                                    ctx.beginPath();
+                                    ctx.moveTo(prevX + boxSize/2, newY - boxSize/2 + 2);
+                                    ctx.lineTo(x - boxSize/2, newY - boxSize/2 + 2);
+                                    ctx.stroke();
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            gameState.nucleotidePositions = [];
+            
+            // Leading strand positions
+            if (gameState.polymeraseActive && !gameState.ligaseProcessing) {
+                for (let i = sequence.length - 5; i >= 0; i--) {
+                    if (!gameState.dnaStrands.leadingNew[i]) {
+                        if (i === sequence.length - 5 || gameState.dnaStrands.leadingNew[i + 1]) {
+                            const x = startX + i * baseWidth;
+                            gameState.nucleotidePositions.push({
+                                x: x, 
+                                y: leadingY + 45,
+                                width: boxSize, 
+                                height: boxSize, 
+                                strand: 'leading', 
+                                index: i
+                            });
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            // Lagging strand positions - show only the next position to add nucleotide
+            if (gameState.polymeraseActive && !gameState.ligaseProcessing) {
+                const currentFragment = gameState.laggingFragments[gameState.currentFragment];
+                if (currentFragment && currentFragment.primerAdded) {
+                    let nextPosition = -1;
+                    
+                    if (gameState.currentFragment === 0) {
+                        // First fragment: find next empty position from 4-10
+                        for (let i = 4; i <= 10; i++) {
+                            if (!gameState.dnaStrands.laggingNew[i]) {
+                                nextPosition = i;
+                                break;
+                            }
+                        }
+                    } else if (gameState.currentFragment === 1) {
+                        // Second fragment: find next empty position from 15-21
+                        for (let i = 15; i <= 21; i++) {
+                            if (!gameState.dnaStrands.laggingNew[i]) {
+                                nextPosition = i;
+                                break;
+                            }
+                        }
+                    } else if (gameState.currentFragment === 2) {
+                        // Third fragment: find next empty position from 26-29
+                        for (let i = 26; i <= 29; i++) {
+                            if (!gameState.dnaStrands.laggingNew[i]) {
+                                nextPosition = i;
+                                break;
+                            }
+                        }
+                    }
+                    
+                    // Only add one position - where the next nucleotide should go
+                    if (nextPosition !== -1) {
+                        const x = startX + nextPosition * baseWidth;
+                        gameState.nucleotidePositions.push({
+                            x: x, 
+                            y: laggingY - 45,
+                            width: boxSize, 
+                            height: boxSize, 
+                            strand: 'lagging', 
+                            index: nextPosition
+                        });
+                    }
+                }
+            }
+        }
+
+        function drawPlacedEnzymes() {
+            gameState.placedEnzymes.forEach(enzyme => {
+                drawEnzyme(enzyme.x, enzyme.y, enzyme.type, enzyme.active);
             });
         }
 
-        function placeEnzyme(enzymeType, enzymeObject) {
-            const order = ['helicase', 'ssbProteins', 'topoisomerase', 'primase', 'polymerase3', 'polymerase1', 'ligase'];
-            const currentIndex = order.indexOf(enzymeType);
-            
-            let canPlace = false;
-            if (currentIndex === 0) {
-                canPlace = true;
-            } else {
-                const prevEnzyme = order[currentIndex - 1];
-                canPlace = replicationState[prevEnzyme];
+        function drawEnzyme(x, y, type, active) {
+            ctx.save();
+            ctx.translate(x, y);
+
+            if (active) {
+                ctx.shadowColor = '#4CAF50';
+                ctx.shadowBlur = 15;
             }
 
-            if (!canPlace) {
-                updateStatus(`Must place ${order[currentIndex - 1]} first! Follow the correct enzyme order.`);
-                return;
+            switch (type) {
+                case 'helicase':
+                    ctx.fillStyle = '#8D6E63';
+                    ctx.beginPath();
+                    for (let i = 0; i < 6; i++) {
+                        const angle = (i * Math.PI) / 3;
+                        const px = Math.cos(angle) * 20;
+                        const py = Math.sin(angle) * 20;
+                        if (i === 0) ctx.moveTo(px, py);
+                        else ctx.lineTo(px, py);
+                    }
+                    ctx.closePath();
+                    ctx.fill();
+                    break;
+                case 'primase':
+                    ctx.fillStyle = '#00BCD4';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 15, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+                case 'polymerase':
+                    ctx.fillStyle = 'rgba(96, 125, 139, 0.4)';
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 18, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+                case 'pol1':
+                    ctx.fillStyle = '#9C27B0';
+                    ctx.beginPath();
+                    ctx.ellipse(0, 0, 15, 13, 0, 0, Math.PI * 2);
+                    ctx.fill();
+                    break;
+                case 'ligase':
+                    ctx.fillStyle = '#795548';
+                    ctx.fillRect(-12, -12, 24, 24);
+                    break;
             }
 
-            // Activate enzyme
-            replicationState[enzymeType] = true;
-            
-            const index = floatingElements.indexOf(enzymeObject);
-            if (index > -1) {
-                floatingElements.splice(index, 1);
-                scene.remove(enzymeObject);
+            ctx.strokeStyle = '#fff';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            ctx.shadowBlur = 0;
+
+            if (active) {
+                ctx.strokeStyle = '#4CAF50';
+                ctx.lineWidth = 3;
+                ctx.setLineDash([4, 4]);
+                ctx.beginPath();
+                ctx.arc(0, 0, 25, 0, Math.PI * 2);
+                ctx.stroke();
+                ctx.setLineDash([]);
             }
 
-            // Enzyme-specific effects with proper explanation
-            if (enzymeType === 'helicase') {
-                replicationState.forkPosition = Math.floor(numBases * 0.3);
-                replicationState.replicationStarted = true;
-                updateStatus('Helicase activated! DNA double helix is unwinding, creating leading (5\'→3\') and lagging (3\'→5\') strands...');
-                createDNAHelix(); // Recreate with unwinding effect and strand labels
-            } else if (enzymeType === 'ssbProteins') {
-                updateStatus('SSB Proteins activated! Single-stranded DNA is now stabilized and protected from degradation.');
-            } else if (enzymeType === 'topoisomerase') {
-                updateStatus('Topoisomerase activated! Relieving supercoiling tension created by helicase unwinding.');
-            } else if (enzymeType === 'primase') {
-                updateStatus('Primase activated! RNA primers being synthesized - required for DNA polymerase to start synthesis.');
-            } else if (enzymeType === 'polymerase3') {
-                startSynthesis();
-                updateStatus('DNA Polymerase III activated! Leading strand: continuous synthesis. Lagging strand: Okazaki fragments.');
-            } else if (enzymeType === 'polymerase1') {
-                updateStatus('DNA Polymerase I activated! Will replace RNA primers with DNA nucleotides on Okazaki fragments.');
-            } else if (enzymeType === 'ligase') {
-                updateStatus('DNA Ligase activated! Will join Okazaki fragments to create continuous lagging strand.');
-            }
+            ctx.fillStyle = '#fff';
+            ctx.font = 'bold 10px Arial';
+            ctx.textAlign = 'center';
+            ctx.fillText(type.charAt(0).toUpperCase() + type.slice(1), 0, 35);
 
-            updateProgress();
+            ctx.restore();
         }
 
-        function placeNucleotide(nucleotideType, nucleotideObject) {
-            if (!replicationState.polymerase3) {
-                updateStatus('Need DNA Polymerase III first to incorporate nucleotides!');
-                return;
+        function updateReplication() {
+            if (!gameState.running) return;
+
+            updateBondAnimations();
+
+            const helicase = gameState.placedEnzymes.find(e => e.type === 'helicase');
+            if (helicase && !gameState.helicaseActive && gameState.running) {
+                gameState.helicaseActive = true;
+                helicase.active = true;
+                updateCurrentStepInstruction();
             }
 
-            if (replicationState.leadingProgress >= 100 && replicationState.laggingProgress >= 100) {
-                updateStatus('DNA replication is complete!');
-                return;
+            if (gameState.helicaseActive && gameState.strandSeparation < 80) {
+                gameState.strandSeparation += 1.5;
             }
 
-            const index = floatingElements.indexOf(nucleotideObject);
-            if (index > -1) {
-                floatingElements.splice(index, 1);
-                scene.remove(nucleotideObject);
-            }
-
-            // Determine which strand to extend based on current progress
-            const leadingNeedsMore = replicationState.leadingProgress < 100;
-            const laggingNeedsMore = replicationState.laggingProgress < 100;
-            
-            if (leadingNeedsMore && (replicationState.leadingProgress <= replicationState.laggingProgress || !laggingNeedsMore)) {
-                // Add to leading strand (continuous synthesis)
-                replicationState.leadingProgress = Math.min(replicationState.leadingProgress + 12, 100);
-                updateStatus(`Added ${nucleotideType} to LEADING strand (continuous synthesis)! Progress: ${replicationState.leadingProgress}%`);
-            } else if (laggingNeedsMore) {
-                // Add to lagging strand (discontinuous synthesis - Okazaki fragments)
-                replicationState.laggingProgress = Math.min(replicationState.laggingProgress + 10, 100);
-                
-                // Create new Okazaki fragment every 20% progress
-                const fragmentNumber = Math.floor(replicationState.laggingProgress / 20) + 1;
-                if (fragmentNumber > replicationState.okazakiFragments.length) {
-                    replicationState.okazakiFragments.push({
-                        nucleotides: [nucleotideType],
-                        complete: false
-                    });
-                    updateStatus(`Started Okazaki Fragment ${fragmentNumber} on LAGGING strand with ${nucleotideType}! Progress: ${replicationState.laggingProgress}%`);
-                } else {
-                    // Add to existing fragment
-                    const currentFragment = replicationState.okazakiFragments[replicationState.okazakiFragments.length - 1];
-                    currentFragment.nucleotides.push(nucleotideType);
-                    updateStatus(`Extended Okazaki Fragment ${fragmentNumber} with ${nucleotideType}! Progress: ${replicationState.laggingProgress}%`);
+            if (gameState.helicaseActive && gameState.strandSeparation >= 80) {
+                const helicaseIndex = gameState.placedEnzymes.findIndex(e => e.type === 'helicase');
+                if (helicaseIndex !== -1) {
+                    gameState.placedEnzymes.splice(helicaseIndex, 1);
+                    showError('Helicase completed unwinding and moved away from the replication fork!');
                 }
-                
-                // Update DNA structure to show new fragment
-                createDNAHelix();
             }
 
-            updateProgress();
-
-            // Check for completion
-            if (replicationState.leadingProgress >= 100 && replicationState.laggingProgress >= 100) {
+            const primases = gameState.placedEnzymes.filter(e => e.type === 'primase');
+            if (primases.length >= 2 && gameState.helicaseActive && gameState.strandSeparation > 40 && !gameState.primaseActive && gameState.running) {
+                gameState.primaseActive = true;
+                primases.forEach(p => p.active = true);
+                gameState.rnaPrimers.leading = true;
+                gameState.rnaPrimers.lagging = true;
+                gameState.laggingFragments[0].primerAdded = true;
+                updateCurrentStepInstruction();
+                
                 setTimeout(() => {
-                    const totalFragments = replicationState.okazakiFragments.length;
-                    alert(`DNA Replication Complete!\n\nLeading Strand: Synthesized continuously\nLagging Strand: Synthesized as ${totalFragments} Okazaki fragments\n\nNext: DNA Pol I will replace primers, then Ligase will join fragments!`);
-                    updateStatus(`Replication complete! Leading strand: continuous. Lagging strand: ${totalFragments} Okazaki fragments ready for processing.`);
-                }, 500);
+                    gameState.placedEnzymes = gameState.placedEnzymes.filter(e => e.type !== 'primase');
+                    showError('Primases completed RNA primer synthesis and detached!');
+                }, 2000);
             }
-        }
 
-        function startSynthesis() {
-            const synthesisInterval = setInterval(() => {
-                if (replicationState.leadingProgress < 100) {
-                    replicationState.leadingProgress += 2;
-                }
-                
-                if (replicationState.laggingProgress < 100) {
-                    replicationState.laggingProgress += 1.5;
-                }
-                
-                if (replicationState.forkPosition < numBases - 5) {
-                    replicationState.forkPosition += 0.2;
-                }
-                
-                updateProgress();
-                
-                // Update DNA structure to show replication fork progression
-                createDNAHelix();
-                
-                if (replicationState.leadingProgress >= 100 && replicationState.laggingProgress >= 100) {
-                    clearInterval(synthesisInterval);
-                }
-            }, 1000);
-        }
+            const polymerases = gameState.placedEnzymes.filter(e => e.type === 'polymerase');
+            if (polymerases.length >= 2 && gameState.primaseActive && !gameState.polymeraseActive && gameState.running) {
+                gameState.polymeraseActive = true;
+                polymerases.forEach(p => p.active = true);
+                updateCurrentStepInstruction();
+            }
 
-        function updateProgress() {
-            Object.keys(ENZYMES).forEach(enzymeKey => {
-                const statusElement = document.getElementById(
-                    enzymeKey === 'ssbProteins' ? 'ssbStatus' : 
-                    enzymeKey === 'topoisomerase' ? 'topoStatus' :
-                    enzymeKey === 'polymerase3' ? 'pol3Status' :
-                    enzymeKey === 'polymerase1' ? 'pol1Status' :
-                    enzymeKey + 'Status'
-                );
+            const leadingComplete = gameState.nucleotideCount.leading >= gameState.dnaSequence.length - 4;
+            const laggingComplete = gameState.nucleotideCount.lagging >= 18;
+            if (gameState.polymeraseActive && leadingComplete && laggingComplete && polymerases.length > 0) {
+                gameState.placedEnzymes = gameState.placedEnzymes.filter(e => e.type !== 'polymerase');
+                showError('DNA Polymerase III completed synthesis and detached from both strands!');
+            }
+
+            const pol1 = gameState.placedEnzymes.find(e => e.type === 'pol1');
+            if (pol1 && leadingComplete && laggingComplete && !gameState.pol1Active && gameState.running) {
+                gameState.pol1Active = true;
+                pol1.active = true;
                 
-                if (statusElement) {
-                    statusElement.className = 'status-indicator ' + 
-                        (replicationState[enzymeKey] ? 'status-active' : 'status-inactive');
+                for (let i = gameState.dnaSequence.length - 4; i < gameState.dnaSequence.length; i++) {
+                    const templateBase = gameState.dnaStrands.leading[i];
+                    const complement = getComplement(templateBase);
+                    gameState.dnaStrands.leadingNew[i] = complement;
                 }
-            });
-
-            document.getElementById('forkPosition').textContent = Math.round((replicationState.forkPosition / numBases) * 100);
-            document.getElementById('leadingCount').textContent = Math.round(replicationState.leadingProgress);
-            document.getElementById('laggingCount').textContent = Math.round(replicationState.laggingProgress);
-        }
-
-        function toggleGameMode() {
-            gameMode = !gameMode;
-            const gameBtn = document.getElementById('gameBtn');
-            const progress = document.getElementById('progress');
-            
-            if (gameMode) {
-                gameBtn.textContent = 'Exit Replication';
-                gameBtn.className = 'reset-btn';
-                progress.style.display = 'block';
-                createFloatingElements();
-                updateStatus('Replication mode active! Click enzymes in order: Helicase → SSB → Topoisomerase → Primase → DNA Pol III → DNA Pol I → Ligase');
-            } else {
-                gameBtn.textContent = 'Start Replication';
-                gameBtn.className = 'start-btn';
-                progress.style.display = 'none';
                 
-                floatingElements.forEach(element => {
-                    scene.remove(element);
+                const laggingPrimerPositions = [
+                    [0, 1, 2, 3],
+                    [11, 12, 13, 14],
+                    [22, 23, 24, 25]
+                ];
+                
+                laggingPrimerPositions.forEach((positions) => {
+                    positions.forEach(i => {
+                        const templateBase = gameState.dnaStrands.lagging[i];
+                        const complement = getComplement(templateBase);
+                        gameState.dnaStrands.laggingNew[i] = complement;
+                    });
                 });
-                floatingElements = [];
                 
-                updateStatus('Click "Start Replication" to begin the interactive simulation.');
+                showError('DNA Polymerase I automatically replaced ALL RNA primers with DNA bases!');
+                
+                setTimeout(() => {
+                    const pol1Index = gameState.placedEnzymes.findIndex(e => e.type === 'pol1');
+                    if (pol1Index !== -1) {
+                        gameState.placedEnzymes.splice(pol1Index, 1);
+                        showError('DNA Polymerase I completed primer replacement and detached!');
+                    }
+                }, 3000);
             }
+
+            const ligase = gameState.placedEnzymes.find(e => e.type === 'ligase');
+            if (ligase && gameState.pol1Active && !gameState.ligaseActive && gameState.running) {
+                gameState.ligaseActive = true;
+                ligase.active = true;
+                gameState.ligaseProcessing = true;
+                gameState.ligaseTimer = 0;
+                gameState.ligaseGapIndex = 0;
+                
+                showError('DNA Ligase activated! Beginning to join Okazaki fragments...');
+            }
+
+            processLigaseActivity();
+            updateStatusDisplay();
         }
 
-        function resetSimulation() {
-            replicationState = {
-                helicase: false,
-                ssbProteins: false,
-                topoisomerase: false,
-                primase: false,
-                polymerase3: false,
-                polymerase1: false,
-                ligase: false,
-                leadingProgress: 0,
-                laggingProgress: 0,
-                forkPosition: 0,
-                replicationStarted: false
+        function render() {
+            try {
+                ctx.save();
+                drawDNA();
+                drawPlacedEnzymes();
+                updateReplication();
+                updateBondAnimations();
+                updateCurrentStepInstruction();
+
+                if (gameState.isDragging && gameState.draggedItem) {
+                    const item = gameState.draggedItem;
+                    if (item.type === 'enzyme') {
+                        drawEnzyme(item.x, item.y, item.enzyme);
+                    } else if (item.type === 'nucleotide') {
+                        ctx.fillStyle = BASE_COLORS[item.base];
+                        ctx.fillRect(item.x - 12, item.y - 10, 24, 20);
+                        ctx.strokeStyle = '#fff';
+                        ctx.lineWidth = 2;
+                        ctx.strokeRect(item.x - 12, item.y - 10, 24, 20);
+                        ctx.fillStyle = '#000';
+                        ctx.font = 'bold 14px Arial';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(item.base, item.x, item.y + 5);
+                    }
+                }
+                
+                ctx.restore();
+            } catch (error) {
+                console.error('Rendering error:', error);
+            }
+            
+            requestAnimationFrame(render);
+        }
+
+        function getMousePos(e) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            };
+        }
+
+        function getNucleotideClickPosition(mousePos) {
+            for (let i = 0; i < gameState.nucleotidePositions.length; i++) {
+                const pos = gameState.nucleotidePositions[i];
+                
+                if (mousePos.x >= pos.x - pos.width/2 && 
+                    mousePos.x <= pos.x + pos.width/2 &&
+                    mousePos.y >= pos.y - pos.height/2 && 
+                    mousePos.y <= pos.y + pos.height/2) {
+                    return { strand: pos.strand, index: pos.index };
+                }
+            }
+            return null;
+        }
+
+        function isValidNucleotidePlacement(base, strandType, position) {
+            const originalBase = strandType === 'leading' 
+                ? gameState.dnaStrands.leading[position]
+                : gameState.dnaStrands.lagging[position];
+            
+            const expectedBase = getComplement(originalBase);
+            return base === expectedBase;
+        }
+
+        // Event listeners and remaining code
+        canvas.addEventListener('mousemove', (e) => {
+            if (gameState.isDragging && gameState.draggedItem) {
+                const mousePos = getMousePos(e);
+                gameState.draggedItem.x = mousePos.x;
+                gameState.draggedItem.y = mousePos.y;
+            }
+        });
+
+        canvas.addEventListener('mouseup', (e) => {
+            if (gameState.isDragging && gameState.draggedItem) {
+                const item = gameState.draggedItem;
+                const mousePos = getMousePos(e);
+                
+                if (item.type === 'enzyme') {
+                    if (!canPlaceEnzyme(item.enzyme)) {
+                        let errorMessage = '';
+                        switch (item.enzyme) {
+                            case 'helicase':
+                                errorMessage = 'Only one Helicase allowed!';
+                                break;
+                            case 'primase':
+                                if (!gameState.helicaseActive) {
+                                    errorMessage = 'Place Helicase first to unwind DNA!';
+                                } else {
+                                    errorMessage = 'Maximum 2 Primases (one for each 3\' end)!';
+                                }
+                                break;
+                            case 'polymerase':
+                                if (gameState.primaseCount < 2) {
+                                    errorMessage = 'Place both Primases first (at 3\' ends)!';
+                                } else {
+                                    errorMessage = 'Maximum 2 DNA Polymerase III (one for each strand)!';
+                                }
+                                break;
+                            case 'pol1':
+                                if (gameState.polymeraseCount < 2) {
+                                    errorMessage = 'Place both DNA Polymerase III first!';
+                                } else {
+                                    errorMessage = 'Complete nucleotide addition first, then place DNA Polymerase I!';
+                                }
+                                break;
+                            case 'ligase':
+                                if (!gameState.pol1Active) {
+                                    errorMessage = 'Place DNA Polymerase I first to replace RNA primers!';
+                                } else {
+                                    errorMessage = 'DNA Ligase already placed!';
+                                }
+                                break;
+                        }
+                        showError(errorMessage);
+                    } else {
+                        const baseWidth = Math.min(26, (canvas.width - 200) / gameState.dnaSequence.length);
+                        const startX = canvas.width / 2 - (gameState.dnaSequence.length * baseWidth / 2);
+                        
+                        let enzymeX, enzymeY;
+                        switch (item.enzyme) {
+                            case 'helicase':
+                                enzymeX = canvas.width / 2;
+                                enzymeY = canvas.height / 2;
+                                break;
+                            case 'primase':
+                                if (gameState.primaseCount === 0) {
+                                    enzymeX = startX + gameState.dnaSequence.length * baseWidth + 40;
+                                    enzymeY = canvas.height / 2 - 80 - gameState.strandSeparation;
+                                } else {
+                                    enzymeX = startX - 40;
+                                    enzymeY = canvas.height / 2 + 80 + gameState.strandSeparation;
+                                }
+                                gameState.primaseCount++;
+                                break;
+                            case 'polymerase':
+                                if (gameState.polymeraseCount === 0) {
+                                    enzymeX = startX + (gameState.dnaSequence.length - 5) * baseWidth;
+                                    enzymeY = canvas.height / 2 - 80 - gameState.strandSeparation;
+                                    gameState.polymerasePositions.leading = gameState.dnaSequence.length - 5;
+                                } else {
+                                    enzymeX = startX + 4 * baseWidth;
+                                    enzymeY = canvas.height / 2 + 80 + gameState.strandSeparation;
+                                    gameState.polymerasePositions.lagging = 4;
+                                }
+                                gameState.polymeraseCount++;
+                                break;
+                            case 'pol1':
+                                enzymeX = canvas.width / 2 - 100;
+                                enzymeY = canvas.height / 2;
+                                gameState.pol1Count++;
+                                break;
+                            case 'ligase':
+                                enzymeX = canvas.width / 2;
+                                enzymeY = canvas.height / 2;
+                                break;
+                            default:
+                                enzymeX = item.x;
+                                enzymeY = item.y;
+                        }
+
+                        gameState.placedEnzymes.push({
+                            type: item.enzyme,
+                            x: enzymeX,
+                            y: enzymeY,
+                            active: false
+                        });
+                        
+                        switch (item.enzyme) {
+                            case 'helicase':
+                                showError('Step 1 Complete: Helicase placed! DNA strands will unwind when simulation starts.');
+                                break;
+                            case 'primase':
+                                if (gameState.primaseCount === 1) {
+                                    showError('First Primase placed! Add one more Primase to complete step 2.');
+                                } else {
+                                    showError('Step 2 Complete: Both Primases placed! RNA primers will be synthesized.');
+                                }
+                                break;
+                            case 'polymerase':
+                                if (gameState.polymeraseCount === 1) {
+                                    showError('First DNA Polymerase III placed! Add one more to complete step 3.');
+                                } else {
+                                    showError('Step 3 Complete: Both DNA Polymerase III placed! Ready for nucleotide addition.');
+                                }
+                                break;
+                            case 'pol1':
+                                showError('Step 5 Complete: DNA Polymerase I placed! RNA primers will be replaced with DNA bases.');
+                                break;
+                            case 'ligase':
+                                showError('Step 6 Complete: DNA Ligase placed! Fragments will be joined.');
+                                break;
+                        }
+                        updateCurrentStepInstruction();
+                    }
+                } else if (item.type === 'nucleotide') {
+                    const clickPos = getNucleotideClickPosition(mousePos);
+                    
+                    if (clickPos && gameState.polymeraseActive && !gameState.ligaseProcessing) {
+                        const strandArray = clickPos.strand === 'leading' ? 
+                            gameState.dnaStrands.leadingNew : gameState.dnaStrands.laggingNew;
+                        
+                        if (strandArray[clickPos.index] === null) {
+                            if (isValidNucleotidePlacement(item.base, clickPos.strand, clickPos.index)) {
+                                strandArray[clickPos.index] = item.base;
+                                gameState.nucleotideCount[clickPos.strand]++;
+                                
+                                if (clickPos.strand === 'leading') {
+                                    if (clickPos.index < gameState.dnaSequence.length - 1 && gameState.dnaStrands.leadingNew[clickPos.index + 1]) {
+                                        addBondAnimation(clickPos.index, 'leading');
+                                        showError('Phosphodiester bond formed! ' + item.base + ' connected to leading strand');
+                                    } else {
+                                        showError('Nucleotide ' + item.base + ' added to leading strand');
+                                    }
+                                    
+                                    gameState.polymerasePositions.leading = clickPos.index - 1;
+                                    const leadingPolymerase = gameState.placedEnzymes.find(e => 
+                                        e.type === 'polymerase' && e.y < canvas.height / 2);
+                                    if (leadingPolymerase) {
+                                        const baseWidth = Math.min(26, (canvas.width - 200) / gameState.dnaSequence.length);
+                                        const startX = canvas.width / 2 - (gameState.dnaSequence.length * baseWidth / 2);
+                                        leadingPolymerase.x = startX + Math.max(0, clickPos.index - 1) * baseWidth;
+                                    }
+                                }
+                                
+                                if (clickPos.strand === 'lagging') {
+                                    if (clickPos.index > 0 && gameState.dnaStrands.laggingNew[clickPos.index - 1]) {
+                                        addBondAnimation(clickPos.index - 1, 'lagging');
+                                        showError('Phosphodiester bond formed! ' + item.base + ' connected to lagging strand');
+                                    } else {
+                                        showError('Nucleotide ' + item.base + ' added to lagging strand');
+                                    }
+                                    
+                                    const laggingPolymerase = gameState.placedEnzymes.find(e => 
+                                        e.type === 'polymerase' && e.y > canvas.height / 2);
+                                    
+                                    if (laggingPolymerase) {
+                                        const baseWidth = Math.min(26, (canvas.width - 200) / gameState.dnaSequence.length);
+                                        const startX = canvas.width / 2 - (gameState.dnaSequence.length * baseWidth / 2);
+                                        
+                                        let nextPosition = clickPos.index + 1;
+                                        const currentFragment = gameState.laggingFragments[gameState.currentFragment];
+                                        if (nextPosition <= currentFragment.end) {
+                                            gameState.polymerasePositions.lagging = nextPosition;
+                                            laggingPolymerase.x = startX + nextPosition * baseWidth;
+                                        }
+                                    }
+                                    
+                                    // Handle fragment completion and transitions
+                                    if (gameState.currentFragment === 0 && clickPos.index >= 4 && clickPos.index <= 10) {
+                                        const fragment = gameState.laggingFragments[0];
+                                        fragment.nucleotidesAdded++;
+                                        
+                                        if (clickPos.index === 10 || fragment.nucleotidesAdded >= 7) {
+                                            fragment.completed = true;
+                                            setTimeout(() => {
+                                                showError('Fragment 1 complete! Adding primer for Fragment 2...');
+                                                gameState.laggingFragments[1].primerAdded = true;
+                                                gameState.currentFragment = 1;
+                                                setTimeout(() => {
+                                                    showError('Fragment 2 primer added! DNA Polymerase III moving to new position...');
+                                                    gameState.polymerasePositions.lagging = 15;
+                                                    if (laggingPolymerase) {
+                                                        const baseWidth = Math.min(26, (canvas.width - 200) / gameState.dnaSequence.length);
+                                                        const startX = canvas.width / 2 - (gameState.dnaSequence.length * baseWidth / 2);
+                                                        laggingPolymerase.x = startX + 15 * baseWidth;
+                                                    }
+                                                }, 3000);
+                                            }, 2000);
+                                        }
+                                    } else if (gameState.currentFragment === 1 && clickPos.index >= 15 && clickPos.index <= 21) {
+                                        const fragment = gameState.laggingFragments[1];
+                                        fragment.nucleotidesAdded++;
+                                        
+                                        if (clickPos.index === 21 || fragment.nucleotidesAdded >= 7) {
+                                            fragment.completed = true;
+                                            setTimeout(() => {
+                                                showError('Fragment 2 complete! Adding primer for Fragment 3...');
+                                                gameState.laggingFragments[2].primerAdded = true;
+                                                gameState.currentFragment = 2;
+                                                setTimeout(() => {
+                                                    showError('Fragment 3 primer added! DNA Polymerase III moving to final position...');
+                                                    gameState.polymerasePositions.lagging = 26;
+                                                    if (laggingPolymerase) {
+                                                        const baseWidth = Math.min(26, (canvas.width - 200) / gameState.dnaSequence.length);
+                                                        const startX = canvas.width / 2 - (gameState.dnaSequence.length * baseWidth / 2);
+                                                        laggingPolymerase.x = startX + 26 * baseWidth;
+                                                    }
+                                                }, 3000);
+                                            }, 2000);
+                                        }
+                                    } else if (gameState.currentFragment === 2 && clickPos.index >= 26 && clickPos.index <= 29) {
+                                        const fragment = gameState.laggingFragments[2];
+                                        fragment.nucleotidesAdded++;
+                                        if (fragment.nucleotidesAdded >= 4) {
+                                            fragment.completed = true;
+                                            showError('Final fragment complete! All Okazaki fragments synthesized.');
+                                        }
+                                    }
+                                }
+                                
+                                const leadingComplete = gameState.nucleotideCount.leading >= gameState.dnaSequence.length - 4;
+                                const laggingComplete = gameState.nucleotideCount.lagging >= 18;
+                                if (leadingComplete && laggingComplete) {
+                                    setTimeout(() => {
+                                        showError('Both strands complete! Ready for DNA Polymerase I to replace RNA primers!');
+                                        updateCurrentStepInstruction();
+                                    }, 2500);
+                                } else {
+                                    updateCurrentStepInstruction();
+                                }
+                                
+                            } else {
+                                const originalBase = clickPos.strand === 'leading' ? 
+                                    gameState.dnaStrands.leading[clickPos.index] : 
+                                    gameState.dnaStrands.lagging[clickPos.index];
+                                const expectedBase = getComplement(originalBase);
+                                showError('WRONG BASE PAIR! Template ' + originalBase + ' pairs with ' + expectedBase + ', NOT ' + item.base + '. Follow base pairing rules!');
+                            }
+                        } else {
+                            showError('Position already filled!');
+                        }
+                    } else if (!gameState.polymeraseActive) {
+                        showError('DNA Polymerase III must be active first!');
+                    } else if (gameState.ligaseProcessing) {
+                        showError('DNA Ligase is currently joining fragments automatically!');
+                    } else if (!clickPos) {
+                        showError('Drop nucleotide on a valid position!');
+                    }
+                }
+                
+                gameState.isDragging = false;
+                gameState.draggedItem = null;
+                
+                document.querySelectorAll('.dragging').forEach(el => {
+                    el.classList.remove('dragging');
+                });
+            }
+        });
+
+        document.querySelectorAll('.tool-item').forEach(item => {
+            item.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                const enzymeType = item.dataset.enzyme;
+                
+                gameState.isDragging = true;
+                gameState.draggedItem = {
+                    type: 'enzyme',
+                    enzyme: enzymeType,
+                    x: 0,
+                    y: 0
+                };
+                
+                item.classList.add('dragging');
+            });
+        });
+
+        document.querySelectorAll('.nucleotide-item').forEach(item => {
+            item.addEventListener('mousedown', (e) => {
+                e.preventDefault();
+                const baseType = item.dataset.base;
+                
+                gameState.isDragging = true;
+                gameState.draggedItem = {
+                    type: 'nucleotide',
+                    base: baseType,
+                    x: 0,
+                    y: 0
+                };
+                
+                item.classList.add('dragging');
+            });
+        });
+
+        document.getElementById('dnaInput').addEventListener('input', (e) => {
+            let value = e.target.value.toUpperCase().replace(/[^ATGC]/g, '');
+            if (value.length !== 30) {
+                const bases = ['A', 'T', 'G', 'C'];
+                if (value.length < 30) {
+                    while (value.length < 30) {
+                        value += bases[Math.floor(Math.random() * bases.length)];
+                    }
+                } else {
+                    value = value.substring(0, 30);
+                }
+            }
+            e.target.value = value;
+            gameState.dnaSequence = value;
+            gameState.originalSequence = value;
+            updateDNADisplays();
+        });
+
+        document.getElementById('generateBtn').addEventListener('click', () => {
+            const newSequence = generateRandomSequence();
+            document.getElementById('dnaInput').value = newSequence;
+            gameState.dnaSequence = newSequence;
+            gameState.originalSequence = newSequence;
+            updateDNADisplays();
+            initSimulation();
+        });
+
+        document.getElementById('startBtn').addEventListener('click', () => {
+            gameState.running = true;
+            document.getElementById('startBtn').classList.add('active');
+            updateCurrentStepInstruction();
+        });
+
+        document.getElementById('stopBtn').addEventListener('click', () => {
+            gameState.running = false;
+            document.getElementById('startBtn').classList.remove('active');
+        });
+
+        document.getElementById('resetBtn').addEventListener('click', () => {
+            gameState.running = false;
+            gameState.dnaSequence = gameState.originalSequence;
+            document.getElementById('startBtn').classList.remove('active');
+            document.getElementById('completionOverlay').classList.remove('show');
+            initSimulation();
+        });
+
+        document.getElementById('completionOverlay').addEventListener('click', (e) => {
+            e.preventDefault();
+            e.stopPropagation();
+            document.getElementById('completionOverlay').classList.remove('show');
+            gameState.running = false;
+            gameState.dnaSequence = gameState.originalSequence;
+            document.getElementById('startBtn').classList.remove('active');
+            initSimulation();
+            setTimeout(() => {
+                showError('New simulation ready! Follow the steps to replicate DNA again.');
+            }, 500);
+        });
+
+        function initSimulation() {
+            updateDNADisplays();
+            updateStatusDisplay();
+            
+            gameState.placedEnzymes = [];
+            gameState.helicaseActive = false;
+            gameState.primaseActive = false;
+            gameState.primaseCount = 0;
+            gameState.polymeraseActive = false;
+            gameState.polymeraseCount = 0;
+            gameState.pol1Active = false;
+            gameState.pol1Count = 0;
+            gameState.ligaseActive = false;
+            gameState.ligaseProcessing = false;
+            gameState.strandSeparation = 0;
+            gameState.nucleotidePositions = [];
+            gameState.nucleotideCount = { leading: 0, lagging: 0 };
+            gameState.rnaPrimers = { leading: false, lagging: false };
+            gameState.bondAnimations = [];
+            gameState.currentFragment = 0;
+            gameState.ligaseTimer = 0;
+            gameState.ligaseGapIndex = 0;
+            gameState.gapsFixed = [];
+            gameState.allGapsFixed = false;
+            gameState.polymerasePositions = {
+                leading: -1,
+                lagging: -1
             };
             
-            updateProgress();
-            createDNAHelix(); // Reset DNA structure
+            gameState.laggingFragments = [
+                { start: 0, end: 10, primerAdded: false, nucleotidesAdded: 0, completed: false },
+                { start: 11, end: 21, primerAdded: false, nucleotidesAdded: 0, completed: false },
+                { start: 22, end: 29, primerAdded: false, nucleotidesAdded: 0, completed: false }
+            ];
             
-            if (gameMode) {
-                createFloatingElements(); // Recreate all enzymes and nucleotides
-            }
-            
-            updateStatus('Simulation reset. DNA structure restored to original state.');
+            gameState.dnaCenter = {
+                x: canvas.width / 2,
+                y: canvas.height / 2
+            };
         }
 
-        // Initialize everything
-        function init() {
-            if (typeof THREE === 'undefined') {
-                updateStatus('Loading Three.js library...');
-                setTimeout(init, 500);
-                return;
-            }
-
-            try {
-                initScene();
-                updateStatus('DNA structure loaded successfully. Click "Start Replication" to begin.');
-            } catch (error) {
-                updateStatus('Error loading 3D graphics: ' + error.message);
-            }
-        }
-
-        // Start initialization when page loads
-        document.addEventListener('DOMContentLoaded', function() {
-            // Set up button listeners
-            document.getElementById('gameBtn').addEventListener('click', toggleGameMode);
-            document.getElementById('resetBtn').addEventListener('click', resetSimulation);
-            
-            updateProgress();
-            
-            // Initialize the 3D scene
-            init();
-        });
+        initSimulation();
+        render();
     </script>
 </body>
 </html>
